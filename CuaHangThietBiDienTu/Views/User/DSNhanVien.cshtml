@@ -1,0 +1,94 @@
+﻿@model IEnumerable<CuaHangThietBiDienTu.Models.User>
+
+@{
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+    ViewBag.Title = "Danh sách nhân viên";
+}
+
+<div class="container-fluid mt-4">
+    <h2 class="text-center mb-4 text-primary fw-bold">
+        Danh sách nhân viên
+    </h2>
+
+    <div class="text-end mb-3">
+        <a href="@Url.Action("Create")" class="btn btn-success shadow-sm">
+            <i class="fa-solid fa-plus"></i> Thêm nhân viên mới
+        </a>
+    </div>
+
+    <div class="table-responsive shadow-sm rounded-4">
+        <table class="table align-middle text-center table-hover">
+            <thead class="table-primary">
+                <tr>
+                    <th>Họ tên</th>
+                    <th>Ngày sinh</th>
+                    <th>Giới tính</th>
+                    <th>Điện thoại</th>
+                    <th>Email</th>
+                    <th>Vai trò</th>
+                    <th>Mật khẩu</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.HoTen</td>
+                        <td>@item.NgaySinh</td>
+                        <td>@item.GioiTinh</td>
+                        <td>@item.DienThoai</td>
+                        <td>@item.Email</td>
+                        <td>@item.VaiTro</td>
+                        <td>@item.MatKhau</td>
+                        <td>
+                            <div class="d-flex justify-content-center gap-2">
+                                <a href="@Url.Action("Edit",new { id = item.MaNguoiDung })"
+                                   class="btn btn-outline-primary btn-sm"
+                                   title="Sửa">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+
+                                <a href="@Url.Action("Details", new { id = item.MaNguoiDung })"
+                                   class="btn btn-outline-info btn-sm"
+                                   title="Xem chi tiết">
+                                    <i class="fa-solid fa-circle-info"></i>
+                                </a>
+
+                                <a href="@Url.Action("Delete", new { id = item.MaNguoiDung })"
+                                   class="btn btn-outline-danger btn-sm"
+                                   onclick="return confirm('Bạn có chắc muốn xóa nhân viên này không?');"
+                                   title="Xóa">
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    h2 {
+        letter-spacing: 0.5px;
+    }
+
+    .table thead th {
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        letter-spacing: 0.5px;
+    }
+
+    .table tbody tr:hover {
+        background-color: #eef6ff;
+        transition: all 0.2s ease;
+    }
+
+    

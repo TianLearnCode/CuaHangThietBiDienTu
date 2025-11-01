@@ -1,0 +1,44 @@
+﻿@model CuaHangThietBiDienTu.Models.TaiKhoan
+@{
+    Layout = "~/Views/Shared/LoginLayout.cshtml";
+}
+@{
+    ViewBag.Title = "Register";
+}
+
+<h2>Register</h2>
+@using (Html.BeginForm("Register", "Account", FormMethod.Post))
+{
+    <div class="form-group">
+        <label>Họ tên:</label>
+        @Html.TextBoxFor(m => m.HoTen, new { @class = "form-control", placeholder = "Nhập họ tên" })
+        @Html.ValidationMessageFor(m => m.HoTen, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        <label>Email:</label>
+        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Nhập email" })
+        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        <label>Mật khẩu:</label>
+        @Html.PasswordFor(m => m.MatKhau, new { @class = "form-control", placeholder = "Nhập mật khẩu" })
+        @Html.ValidationMessageFor(m => m.MatKhau, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        <label>Số điện thoại:</label>
+        @Html.TextBoxFor(m => m.DienThoai, new { @class = "form-control", placeholder = "Nhập số điện thoại" })
+        @Html.ValidationMessageFor(m => m.DienThoai, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        <label>Địa chỉ:</label>
+        @Html.TextBoxFor(m => m.DiaChi, new { @class = "form-control", placeholder = "Nhập địa chỉ" })
+        @Html.ValidationMessageFor(m => m.DiaChi, "", new { @class = "text-danger" })
+    </div>
+
+    <button type="submit" class="btn btn-success mt-2">Đăng ký</button>
+    <a href="@Url.Action("Login", "Account")" class="btn btn-link">Đã có tài khoản? Đăng nhập</a>
+}

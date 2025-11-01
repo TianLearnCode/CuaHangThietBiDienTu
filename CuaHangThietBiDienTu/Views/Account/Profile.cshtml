@@ -1,0 +1,73 @@
+﻿@model CuaHangThietBiDienTu.Models.ProfileUserModel
+@{
+    Layout = "~/Views/Shared/ProfileLayout.cshtml";
+    ViewBag.Title = "Thông tin cá nhân";
+}
+
+
+
+<div class="row p-3 rounded-5 border border-gray-200 bg-white">
+    <div class="d-flex flex-row justify-content-between mb-3">
+        <h4 class="">Thông tin</h4>
+        <a href="@Url.Action("ForgotPassword", "Account")" class="btn btn-outline-success rounded-5"> Đổi mật khẩu</a>
+
+    </div>
+
+    <div class="header-info d-flex flex-column align-items-center justify-content-center text-center p-3 rounded-5 border bg-white mb-5">
+        <i class="fa-solid fa-circle-user fa-5x mb-2" style="color: #63E6BE;"></i>
+        <p class="mb-3 mt-3 fs-3"><strong>@Model.HoTen</strong></p>
+        <p class="mb-3 text-secondary">@Model.Email </p>
+        <p class="mb-3 text-secondary">@Model.DienThoai </p>
+        <a href="@Url.Action("EditProfile", "Account")" class="btn btn-outline-warning rounded-5"><i class="fa-solid fa-pen"></i> Chỉnh sửa</a>
+
+
+    </div>
+
+    <div class="header-info d-flex flex-column p-4 rounded-5 border bg-white mb-3">
+        <div class="">
+
+        </div>
+        <div class="d-flex flex-row justify-content-between">
+            <h5>Thông tin cá nhân</h5>
+            <a href="@Url.Action("EditProfile", "Account")" class="btn btn-outline-warning rounded-5"><i class="fa-solid fa-pen"></i> Chỉnh sửa</a>
+
+        </div>
+        <hr />
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-12 col-lg-6">
+                    <p class="mb-1 text-muted small">Họ Tên</p>
+                    <p class="fw-medium text-dark">@Model.HoTen</p>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <p class="mb-1 text-muted small">Địa Chỉ</p>
+                    <p class="fw-medium text-dark">@Model.DiaChi</p>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <p class="mb-1 text-muted small">Email</p>
+                    <p class="fw-medium text-dark">@Model.Email</p>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <p class="mb-1 text-muted small">Số Điện Thoại</p>
+                    <p class="fw-medium text-dark">@Model.DienThoai</p>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <p class="mb-1 text-muted small">Giới Tính</p>
+                    <p class="fw-medium text-dark">@Model.GioiTinh</p>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <p class="mb-1 text-muted small">Ngày Sinh</p>
+                    <p class="fw-medium text-dark">@Model.NgaySinh</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="mb-3 d-flex flex-row justify-content-center">
+
+        <a href="@Url.Action("Logout", "Account")" class="btn btn-outline-danger w-50 rounded-5">Đăng xuất</a>
+
+    </div>
+
+</div>
+

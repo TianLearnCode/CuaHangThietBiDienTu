@@ -1,0 +1,178 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+
+<style>
+    .sidebar {
+        padding: 10px;
+        border: solid 1px #b9b9b9;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+
+        .sidebar a {
+            margin-left: 8px;
+            padding: 8px;
+            display: block;
+            text-decoration: none;
+        }
+
+    .menu-item {
+        transition: all 0.2s ease-in-out;
+    }
+
+        .menu-item:hover {
+            background-color: #0d6efd; /* Màu xanh Bootstrap */
+            color: white !important;
+        }
+
+            .menu-item:hover i {
+                color: white;
+            }
+
+    /* Hiệu ứng hover cho menu con */
+    .submenu-item {
+        color: #333;
+        text-decoration: none;
+        transition: all 0.2s ease-in-out;
+    }
+
+        .submenu-item:hover {
+            background-color: #e9ecef;
+            color: #0d6efd;
+            text-decoration: none;
+        }
+
+    /* Mục đang active */
+    .active-menu {
+        background-color: #0d6efd !important;
+        color: white !important;
+    }
+
+        .active-menu i {
+            color: white;
+        }
+
+    body {
+        background-color: rgb(248, 249, 250);
+    }
+</style>
+<body>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
+        <div class="container">
+            @Html.ActionLink("CuaHangDienTu.com", "TrangChu", "SanPhams", new { area = "" }, new { @class = "navbar-brand" })
+            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
+                <ul class="navbar-nav flex-grow-1">
+                    <li>@Html.ActionLink("Trang chủ", "TrangChu", "SanPhams", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("Sản phẩm", "SanPham", "SanPhams", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("Liên hệ", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    @if (Session["Role"] != null && Convert.ToInt32(Session["Role"]) == 1)
+                    {
+                        <li>@Html.ActionLink("Admin Page", "AdminPage", "Admin", new { area = "" }, new { @class = "nav-link" })</li>
+                    }
+                </ul>
+            </div>
+        </div>
+        <div class="text-end p-2 text-white">
+            @if (Session["Email"] != null)
+            {
+                <a href="@Url.Action("Profile", "Account")"
+                   class="nav-link text-decoration-none"
+                   style="white-space: nowrap;">
+                     Xin chào, @Session["UserName"]!
+                </a>
+                
+            }
+            else
+            {
+                <a href="@Url.Action("Login", "Account")"
+                   class="nav-link text-decoration-none">
+                    Đăng nhập
+                </a>
+            }
+        </div>
+    </nav>
+
+
+
+    <div class="container-fluid body-content">
+        <div class="row">
+            <div class="col-lg-3">
+
+                <div class="side-bar bg-white p-3" style="width:100%; min-height:100vh;">
+                    <h3 class="sidebar-title text-primary border-bottom pb-2 mb-3">
+                        <i class="fa fa-bars me-2"></i> Danh mục
+                    </h3>
+                    <ul class="list-unstyled">
+
+                        <!-- Menu Loại sản phẩm -->
+                        <li class="mb-2">
+                            <a class="menu-item d-flex align-items-center justify-content-between text-dark text-decoration-none px-2 py-2 rounded"
+                               data-bs-toggle="collapse"
+                               href="#collapseLoaiSanPham"
+                               role="button"
+                               aria-expanded="false"
+                               aria-controls="collapseLoaiSanPham">
+                                <span><i class="fa-regular fa-rectangle-list"></i> Loại sản phẩm</span>
+                                <i class="fa fa-chevron-down small"></i>
+                            </a>
+
+                            <ul class="collapse list-unstyled ps-4 mt-2" id="collapseLoaiSanPham">
+                                <li class="mb-1">
+                                    @Html.Action("TheoLoaiSP", "SanPhams")
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- Menu Nhà cung cấp -->
+                        <li class="mb-2">
+                            <a class="menu-item d-flex align-items-center justify-content-between text-dark text-decoration-none px-2 py-2 rounded"
+                               data-bs-toggle="collapse"
+                               href="#collapseNhaCungCap"
+                               role="button"
+                               aria-expanded="false"
+                               aria-controls="collapseNhaCungCap">
+                                <span><i class="fa fa-truck me-2"></i> Nhà cung cấp</span>
+                                <i class="fa fa-chevron-down small"></i>
+                            </a>
+
+                            <ul class="collapse list-unstyled ps-4 mt-2" id="collapseNhaCungCap">
+                                <li class="mb-1">
+                                    @Html.Action("TheoNCC", "SanPhams")
+                                </li>
+                            </ul>
+                        </li>
+
+                    </ul>
+
+                </div>
+
+            </div>
+            <div class="col-lg-9">
+                @RenderBody()
+
+            </div>
+        </div>
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

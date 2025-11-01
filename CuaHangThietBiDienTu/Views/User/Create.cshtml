@@ -1,0 +1,79 @@
+﻿@model CuaHangThietBiDienTu.Models.NguoiDung
+
+@{
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+    ViewBag.Title = "Thêm người dùng mới";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-header bg-success text-white text-center py-3">
+            <h3 class="mb-0"><i class="bi bi-person-plus-fill"></i> Thêm người dùng mới</h3>
+        </div>
+
+        <div class="card-body px-5 py-4">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Họ và tên</label>
+                        @Html.TextBoxFor(model => model.HoTen, new { @class = "form-control", placeholder = "Nhập họ và tên" })
+                        @Html.ValidationMessageFor(model => model.HoTen, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Ngày sinh</label>
+                        @Html.TextBoxFor(model => model.NgaySinh, "{0:yyyy-MM-dd}", new { @type = "date", @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.NgaySinh, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Giới tính</label>
+                        @Html.DropDownListFor(model => model.GioiTinh, new List<SelectListItem> {
+                            new SelectListItem { Text = "Nam", Value = "Nam" },
+                            new SelectListItem { Text = "Nữ", Value = "Nữ" }
+                        }, "-- Chọn giới tính --", new { @class = "form-select" })
+                        @Html.ValidationMessageFor(model => model.GioiTinh, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Số điện thoại</label>
+                        @Html.TextBoxFor(model => model.DienThoai, new { @class = "form-control", placeholder = "Nhập số điện thoại" })
+                        @Html.ValidationMessageFor(model => model.DienThoai, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Địa chỉ</label>
+                    @Html.TextBoxFor(model => model.DiaChi, new { @class = "form-control", placeholder = "Nhập địa chỉ" })
+                    @Html.ValidationMessageFor(model => model.DiaChi, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Vai trò</label>
+                        @Html.DropDownList("MaVaiTro", null, "-- Chọn vai trò --", new { @class = "form-select" })
+                        @Html.ValidationMessageFor(model => model.MaVaiTro, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Ảnh đại diện (URL)</label>
+                        @Html.TextBoxFor(model => model.AVT, new { @class = "form-control", placeholder = "Nhập đường dẫn ảnh" })
+                        @Html.ValidationMessageFor(model => model.AVT, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-success px-4 me-2 shadow-sm">
+                        <i class="bi bi-check-circle-fill"></i> Thêm người dùng
+                    </button>
+                    <a href="@Url.Action("DSNguoiDung")" class="btn btn-secondary px-4 shadow-sm">
+                        <i class="bi bi-arrow-left-circle"></i> Quay lại
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>

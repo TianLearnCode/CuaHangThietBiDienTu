@@ -1,0 +1,67 @@
+﻿@model IEnumerable<CuaHangThietBiDienTu.Models.SanPham>
+@{
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+    ViewBag.Title = "Danh sách nhân viên";
+}
+
+
+<div class="mt-4">
+    <h2 class="text-center mb-4 text-primary fw-bold">
+        Danh sách sản phẩm
+    </h2>
+
+    <div class="text-end mb-3">
+        <a href="@Url.Action("Create")" class="btn btn-success shadow-sm">
+            <i class="fa-solid fa-plus"></i> Thêm sản phẩm khác
+        </a>
+    </div>
+
+    <div class="table-responsive shadow-sm rounded-4">
+        <table class="table align-middle text-center ">
+            <thead class="table-primary">
+                <tr>
+                    <th>Tên sản phẩm</th>
+                    <th>Giá</th>
+                    <th>Mô tả</th>
+                    <th>Ngày cập nhật</th>
+                    <th>Hình ảnh</th>
+                    <th>Số lượng tồn</th>
+                    <th>Loại sản phẩm</th>
+                    <th>NCC</th>
+                    <th>Thao tác</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.TenSP</td>
+                        <td>@item.GiaBan</td>
+                        <td>@item.MoTa</td>
+                        <td>@item.NgayCapNhat</td>
+                        <td>@item.HinhAnh</td>
+                        <td>@item.SoLuongTon</td>
+                        <td>@item.LoaiSanPham.TenLoai</td>
+                        <td>@item.NhaCungCap.TenNCC</td>
+
+                        <td>
+                            <div class="d-flex justify-content-center gap-2">
+                                <a href="@Url.Action("Edit", new { id = item.MaSP })" class="btn btn-outline-primary btn-sm">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+                                <a href="@Url.Action("Details", new { id = item.MaSP })" class="btn btn-outline-info btn-sm">
+                                    <i class="fa-solid fa-circle-info"></i>
+                                </a>
+                                <a href="@Url.Action("Delete", new { id = item.MaSP })" class="btn btn-outline-danger btn-sm"
+                                   onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này không?');">
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
