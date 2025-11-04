@@ -15,6 +15,8 @@ namespace CuaHangThietBiDienTu.Controllers
         private QL_WEB_THIETBIDIENTUEntities db = new QL_WEB_THIETBIDIENTUEntities();
 
         // GET: User
+
+
         public ActionResult DSKhachHang()
         {
             var nguoiDungs = (from nd in db.NguoiDungs

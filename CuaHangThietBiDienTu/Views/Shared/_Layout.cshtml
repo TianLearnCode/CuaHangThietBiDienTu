@@ -81,6 +81,10 @@
                     @if (Session["Role"] != null && Convert.ToInt32(Session["Role"]) == 1)
                     {
                         <li>@Html.ActionLink("Admin Page", "AdminPage", "Admin", new { area = "" }, new { @class = "nav-link" })</li>
+                    }@if (Session["Role"] != null && Convert.ToInt32(Session["Role"]) == 2)
+                    {
+                        <li>@Html.ActionLink("Quản lý", "StaffPage", "NhanVien", new { area = "" }, new { @class = "nav-link" })</li>
+
                     }
                 </ul>
             </div>

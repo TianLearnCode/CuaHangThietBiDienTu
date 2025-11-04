@@ -1,74 +1,42 @@
 ﻿@model CuaHangThietBiDienTu.Models.NguoiDung
 
 @{
-    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+
 }
 
-<h2>Details</h2>
 
-<div>
-    <h4>NguoiDung</h4>
+<div class="">
+    @if (Model.MaVaiTro == 2)
+    {
+        <h4>Thông tin cá nhân nhân viên</h4>
+
+    }@if (Model.MaVaiTro == 3)
+    {
+        <h4>Thông tin cá nhân khách hàng </h4>
+
+    }
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.HoTen)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.HoTen)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.NgaySinh)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.NgaySinh)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.GioiTinh)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.GioiTinh)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.DienThoai)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.DienThoai)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.DiaChi)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.DiaChi)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.AVT)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.AVT)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.VaiTro.TenVaiTro)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.VaiTro.TenVaiTro)
-        </dd>
-
-    </dl>
+    <div class="row p-3 rounded-5 border border-gray-200 bg-white">
+        <div class="col-lg-3">
+            <img src="~/Content/Images/UserAVT/@Model.AVT" class="w-100 rounded-5"/>
+        </div>
+        <div class="col-lg-9 p-3 rounded-5 border border-gray-200">
+            <div class="row">
+                <div class="co"></div>
+            </div>
+        </div>
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.MaNguoiDung }) |
-    @Html.ActionLink("Back to List", "Index")
+<p class="mt-5">
+    @Html.ActionLink("Edit", "Edit", new { id = Model.MaNguoiDung }, new { @class = "btn btn-primary" }) |
+    @if (Model.MaVaiTro == 2)
+    {
+        @Html.ActionLink("Quay lại", "DSNhanVien", "User", null, new { @class = "btn btn-secondary" })
+    }
+    else if (Model.MaVaiTro == 3)
+    {
+        @Html.ActionLink("Quay lại", "DSKhachHang", "User", null, new { @class = "btn btn-secondary" })
+    }
+
 </p>

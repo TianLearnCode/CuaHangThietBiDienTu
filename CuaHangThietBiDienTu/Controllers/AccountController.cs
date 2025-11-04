@@ -1,9 +1,10 @@
-﻿using System;
+﻿using CuaHangThietBiDienTu.Models;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using CuaHangThietBiDienTu.Models;
 
 namespace CuaHangThietBiDienTu.Controllers
 {
@@ -26,29 +27,46 @@ namespace CuaHangThietBiDienTu.Controllers
             return View(nguoiDung);
         }
         [HttpPost]
-        public ActionResult EditProfile(NguoiDung model)
+        [ValidateAntiForgeryToken]
+        public ActionResult EditProfile(NguoiDung model, HttpPostedFileBase AvatarFile)
         {
             if (Session["UserID"] == null)
                 return RedirectToAction("Login");
 
             int maNguoiDung = (int)Session["UserID"];
-            var nguoiDung = db.NguoiDungs.FirstOrDefault(x => x.MaNguoiDung == maNguoiDung);
+            var existingUser = db.NguoiDungs.Find(maNguoiDung);
 
-            if (nguoiDung != null)
+            if (existingUser == null)
+                return HttpNotFound();
+
+            if (ModelState.IsValid)
             {
-                nguoiDung.HoTen = model.HoTen;
-                nguoiDung.NgaySinh = model.NgaySinh;
-                nguoiDung.GioiTinh = model.GioiTinh;
-                nguoiDung.DienThoai = model.DienThoai;
-                nguoiDung.DiaChi = model.DiaChi;
+                existingUser.HoTen = model.HoTen;
+                existingUser.NgaySinh = model.NgaySinh;
+                existingUser.GioiTinh = model.GioiTinh;
+                existingUser.DienThoai = model.DienThoai;
+                existingUser.DiaChi = model.DiaChi;
+
+                if (AvatarFile != null && AvatarFile.ContentLength > 0)
+                {
+                    string fileName = Path.GetFileNameWithoutExtension(AvatarFile.FileName);
+                    string extension = Path.GetExtension(AvatarFile.FileName);
+                    fileName = fileName + "_" + DateTime.Now.Ticks + extension;
+
+                    string path = Path.Combine(Server.MapPath("~/Content/Images/UserAVT/"), fileName);
+                    AvatarFile.SaveAs(path);
+
+                    existingUser.AVT = fileName;
+                }
 
                 db.SaveChanges();
+                ViewBag.Message = "Cập nhật thông tin thành công!";
+                return View(existingUser);
             }
 
-            ViewBag.Message = "Cập nhật thành công!";
             return View(model);
         }
-
+        
         public ActionResult ForgotPassword()
         {
 

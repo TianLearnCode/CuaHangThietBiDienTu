@@ -13,38 +13,62 @@
                 </div>
 
                 <div class="card-body p-4">
-                    @using (Html.BeginForm("EditProfile", "Account", FormMethod.Post))
+                    @using (Html.BeginForm("EditProfile", "Account", FormMethod.Post, new { enctype = "multipart/form-data" }))
                     {
                         @Html.AntiForgeryToken()
 
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Họ tên</label>
-                            @Html.TextBoxFor(model => model.HoTen, new { @class = "form-control", placeholder = "Nhập họ tên..." })
+                        <div class="row mb-3">
+                            <div class="col-lg-6">
+                                <label class="form-label fw-bold">Họ tên</label>
+                                @Html.TextBoxFor(model => model.HoTen, new { @class = "form-control", placeholder = "Nhập họ tên..." })
+
+                            </div>
+                            <div class="col-lg-6">
+                                <label class="form-label fw-bold">Ngày sinh</label>
+                                @Html.TextBoxFor(model => model.NgaySinh, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                            </div>
+                        
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Ngày sinh</label>
-                            @Html.TextBoxFor(model => model.NgaySinh, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
-                        </div>
+                        
 
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Giới tính</label>
-                            @Html.DropDownListFor(model => model.GioiTinh, new List<SelectListItem> {
-                                new SelectListItem { Text = "Nam", Value = "Nam" },
-                                new SelectListItem { Text = "Nữ", Value = "Nữ" },
-                                new SelectListItem { Text = "Khác", Value = "Khác" }
-                            }, "Chọn giới tính", new { @class = "form-select" })
-                        </div>
+                        <div class="row mb-3">
+                            <div class="col-lg-6">
+                                <label class="form-label fw-bold">Giới tính</label>
+                                @Html.DropDownListFor(model => model.GioiTinh, new List<SelectListItem> {
+                                    new SelectListItem { Text = "Nam", Value = "Nam" },
+                                    new SelectListItem { Text = "Nữ", Value = "Nữ" },
+                                    new SelectListItem { Text = "Khác", Value = "Khác" }
+                                }, "Chọn giới tính", new { @class = "form-select" })
+                            </div>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Điện thoại</label>
-                            @Html.TextBoxFor(model => model.DienThoai, new { @class = "form-control", placeholder = "Nhập số điện thoại..." })
+                            <div class="col-lg-6">
+                                <label class="form-label fw-bold">Điện thoại</label>
+                                @Html.TextBoxFor(model => model.DienThoai, new { @class = "form-control", placeholder = "Nhập số điện thoại..." })
+                            </div>
                         </div>
+                        
 
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Địa chỉ</label>
-                            @Html.TextBoxFor(model => model.DiaChi, new { @class = "form-control", placeholder = "Nhập địa chỉ..." })
+                       
+                        <div class="row mb-3">
+                            <div class="col-lg-6">
+                                <label class="form-label fw-bold">Địa chỉ</label>
+                                @Html.TextBoxFor(model => model.DiaChi, new { @class = "form-control", placeholder = "Nhập địa chỉ..." })
+                            </div>
+
+                            <div class="col-lg-6">
+                                <label class="form-label fw-bold">Ảnh đại diện</label>
+                                <input type="file" name="AvatarFile" accept=".jpg,.pmg,.jpeg" class="form-control"/>
+                                @if (!string.IsNullOrEmpty(Model.AVT))
+                                {
+                                    <div class="mt-2">
+                                        <img src="~/Content/Images/UserAVT/@Model.AVT" alt="Avatar" class="rounded-circle border" style="width:100px;height:100px;object-fit:cover;" />
+
+                                    </div>
+                                }
+                            </div>
                         </div>
+                        
 
                         <div class="text-center mt-4">
                             <button type="submit" class="btn btn-success px-4 me-2">

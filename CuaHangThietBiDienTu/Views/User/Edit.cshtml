@@ -49,10 +49,18 @@
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Địa chỉ</label>
-                    @Html.TextBoxFor(model => model.DiaChi, new { @class = "form-control", placeholder = "Nhập địa chỉ" })
-                    @Html.ValidationMessageFor(model => model.DiaChi, "", new { @class = "text-danger" })
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Địa chỉ</label>
+                        @Html.TextBoxFor(model => model.DiaChi, new { @class = "form-control", placeholder = "Nhập địa chỉ" })
+                        @Html.ValidationMessageFor(model => model.DiaChi, "", new { @class = "text-danger" })
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Ảnh đại diện (URL)</label>
+                        @Html.TextBoxFor(model => model.AVT, new { @class = "form-control", placeholder = "Nhập đường dẫn ảnh" })
+                        @Html.ValidationMessageFor(model => model.AVT, "", new { @class = "text-danger" })
+                    </div>
                 </div>
 
                 <div class="row mb-3">
@@ -62,11 +70,7 @@
                         @Html.ValidationMessageFor(model => model.MaVaiTro, "", new { @class = "text-danger" })
                     </div>
 
-                    <div class="col-md-6">
-                        <label class="form-label fw-semibold">Ảnh đại diện (URL)</label>
-                        @Html.TextBoxFor(model => model.AVT, new { @class = "form-control", placeholder = "Nhập đường dẫn ảnh" })
-                        @Html.ValidationMessageFor(model => model.AVT, "", new { @class = "text-danger" })
-                    </div>
+                    
                 </div>
 
                 <div class="text-center mt-4">
