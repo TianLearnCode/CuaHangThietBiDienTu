@@ -1,0 +1,60 @@
+﻿@model CuaHangThietBiDienTu.Models.SanPham
+@{
+    ViewBag.Title = "Chi tiết sản phẩm";
+}
+
+<h2>Chi tiết sản phẩm</h2>
+<div class="row border-2 shadow-lg p-3 rounded-4">
+    <div class="col-lg-4 rounded-4 ">
+        <img src="~/Content/Images/ProductImg/@Model.HinhAnh" class="w-100"/>
+        <div class="row">
+            @foreach (var anh in Model.HINHANHs)
+            {
+                <div class="col-lg-3">
+                    <img src="" style="width: 100%;">
+                </div>
+            }
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <h3>@Model.TenSP</h3>
+        <p class="fs-4 fw-bold text-danger">@Model.GiaBan</p>
+        <p>@Model.MoTa</p>
+        <div class="row g-3 text-bottom">
+            <div class="col-lg-6">
+                <a href="#" class="btn btn-warning">Thêm vào giỏ</a>
+            </div>
+            <div class="col-lg-6">
+                <a href="#" class="btn btn-secondary">Quay lại</a>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+<div class="row mt-5">
+    @if (ViewBag.SPLQ != null)
+    {
+        <h3>Sản phẩm liên quan</h3>
+        <div class="row">
+            @foreach (var sp in ViewBag.SPLQ)
+            {
+
+                <div class="col-md-4 mb-3">
+                    <div class="card text-center h-100 rounded-4 shadow-sm">
+                        <div class="p-3">
+                            <img src="~/Content/Images/ProductImg/@sp.HinhAnh" class="rounded-4" style="width: 100%; max-height: 250px; object-fit:cover;" alt="...">
+
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">@sp.TenSP</h5>
+                            <p class="card-text text-danger fw-bold">@sp.GiaBan.ToString("N0")</p>
+                            <a href="@Url.Action("ChiTietSP", "SanPhams", new {maSP = sp.MaSP})" class="btn btn-primary">Xem chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+

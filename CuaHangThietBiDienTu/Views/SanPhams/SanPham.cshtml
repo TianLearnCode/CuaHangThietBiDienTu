@@ -4,18 +4,21 @@
     ViewBag.Title = "SanPham";
 }
 
-<h2>SanPham</h2>
+<h2 class="mb-5 text-center">Sản phẩm nổi bật</h2>
 
-<div class="row">
+<div class="row ">
     @foreach (var sp in Model)
     {
-        <div class="col-lg-4">
-            <div class="card">
-                <img src="~/Content/images/@sp.HinhAnh" class="card-img-top" style="max-width: 200px;" alt="...">
+        <div class="col-md-4 mb-3">
+            <div class="card text-center h-100 rounded-4 shadow-sm">
+                <div class="p-3">
+                    <img src="~/Content/Images/ProductImg/@sp.HinhAnh" class="rounded-4" style="width: 100%; max-height: 250px; object-fit:cover;" alt="...">
+
+                </div>
                 <div class="card-body">
                     <h5 class="card-title">@sp.TenSP</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                    <p class="card-text text-danger fw-bold">@sp.GiaBan.Value.ToString("N0")</p>
+                    <a href="@Url.Action("ChiTietSP", "SanPhams", new {maSP = sp.MaSP})" class="btn btn-primary">Xem chi tiết</a>
                 </div>
             </div>
         </div>

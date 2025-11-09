@@ -219,6 +219,16 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="Content\Images\ProductImg\s24.jpg" />
+    <Content Include="Content\Images\ProductImg\iphone15.jpg" />
+    <Content Include="Content\Images\ProductImg\ipadair.jpg" />
+    <Content Include="Content\Images\ProductImg\xps13.jpg" />
+    <Content Include="Content\Images\ProductImg\buds.jpg" />
+    <Content Include="Content\Images\ProductImg\url_image_5.jpg" />
+    <Content Include="Content\Images\ProductImg\url_image_6.jpg" />
+    <Content Include="Content\Images\ProductImg\url_image_7.jpg" />
+    <Content Include="Content\Images\ProductImg\url_image_8.jpg" />
+    <Content Include="Content\Images\ProductImg\url_image_9.jpg" />
     <Content Include="Content\Images\UserAVT\user2.jpg" />
     <Content Include="Content\Images\UserAVT\user3.jpg" />
     <Content Include="Content\Images\UserAVT\user4.jpg" />
@@ -298,6 +308,7 @@
     <Content Include="Views\User\Details.cshtml" />
     <Content Include="Views\User\Edit.cshtml" />
     <Content Include="Views\User\Index.cshtml" />
+    <Content Include="Views\SanPhams\ChiTietSP.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

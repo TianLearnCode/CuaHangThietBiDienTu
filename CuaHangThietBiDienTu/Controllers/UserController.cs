@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -92,20 +93,107 @@ namespace CuaHangThietBiDienTu.Controllers
         // POST: User/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Create([Bind(Include = "MaNguoiDung,HoTen,NgaySinh,GioiTinh,DienThoai,DiaChi,MaVaiTro,Email,MatKhau")] NguoiDung nguoiDung, HttpPostedFileBase AnhDaiDien)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        if(AnhDaiDien!=null && AnhDaiDien.ContentLength > 0)
+        //        {
+        //            var filename = Path.GetFileName(AnhDaiDien.FileName);
+        //            var path = Path.Combine(Server.MapPath("~/Content/Images/UserAVT"), filename);
+
+        //            AnhDaiDien.SaveAs(path);
+        //            nguoiDung.AVT = filename;
+        //        }
+        //        else
+        //        {
+        //            nguoiDung.AVT = "defaultAVT.jpg";
+        //        }
+        //            db.NguoiDungs.Add(nguoiDung);
+
+        //        db.SaveChanges();
+        //        if (nguoiDung.MaVaiTro == 2)
+        //        {
+        //            return RedirectToAction("DSNhanVien");
+        //        }
+        //        else if (nguoiDung.MaVaiTro == 3) {
+        //            return RedirectToAction("DSKhachHang");
+
+        //        }
+        //        else
+        //        {
+        //            return RedirectToAction("AdminPage", "Admin");
+
+        //        }
+        //    }
+
+        //    ViewBag.MaVaiTro = new SelectList(db.VaiTroes, "MaVaiTro", "TenVaiTro", nguoiDung.MaVaiTro);
+        //    return View(nguoiDung);
+        //}
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "MaNguoiDung,HoTen,NgaySinh,GioiTinh,DienThoai,DiaChi,MaVaiTro,AVT")] NguoiDung nguoiDung)
+        public ActionResult Create(User model, HttpPostedFileBase AnhDaiDien)
         {
             if (ModelState.IsValid)
             {
+                var nguoiDung = new NguoiDung
+                {
+                    HoTen = model.HoTen,
+                    NgaySinh = model.NgaySinh,
+                    GioiTinh = model.GioiTinh,
+                    DienThoai = model.DienThoai,
+                    DiaChi = model.DiaChi,
+                    MaVaiTro = model.MaVaiTro
+                };
+
+                if (AnhDaiDien != null && AnhDaiDien.ContentLength > 0)
+                {
+                    var filename = Path.GetFileName(AnhDaiDien.FileName);
+                    var path = Path.Combine(Server.MapPath("~/Content/Images/UserAVT"), filename);
+                    AnhDaiDien.SaveAs(path);
+
+                    nguoiDung.AVT = filename;
+                }
+                else
+                {
+                    nguoiDung.AVT = "defaultAVT.jpg";
+                }
+
                 db.NguoiDungs.Add(nguoiDung);
+                db.SaveChanges();   
+
+                var taiKhoan = new TaiKhoan
+                {
+                    Email = model.Email,
+                    MatKhau = model.MatKhau,  
+                    MaNguoiDung = nguoiDung.MaNguoiDung
+                };
+
+                db.TaiKhoans.Add(taiKhoan);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+
+                // 3. Điều hướng theo vai trò
+                if (model.MaVaiTro == 2)
+                {
+                    return RedirectToAction("DSNhanVien");
+                }
+                else if (model.MaVaiTro == 3)
+                {
+                    return RedirectToAction("DSKhachHang");
+                }
+                else
+                {
+                    return RedirectToAction("AdminPage", "Admin");
+                }
             }
 
-            ViewBag.MaVaiTro = new SelectList(db.VaiTroes, "MaVaiTro", "TenVaiTro", nguoiDung.MaVaiTro);
-            return View(nguoiDung);
+            ViewBag.MaVaiTro = new SelectList(db.VaiTroes, "MaVaiTro", "TenVaiTro", model.MaVaiTro);
+            return View(model);
         }
+
 
         // GET: User/Edit/5
         public ActionResult Edit(int? id)

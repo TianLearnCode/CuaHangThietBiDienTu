@@ -16,6 +16,13 @@ namespace CuaHangThietBiDienTu.Controllers
 
         // GET: SanPhams
 
+        public ActionResult ChiTietSP(int? maSP)
+        {
+            var sanpham = db.SanPhams.FirstOrDefault(sp => sp.MaSP == maSP);
+            var splq = db.SanPhams.Where(sp => sp.MaLoai == maSP && sp.MaSP != maSP).ToList();
+            ViewBag.SPLQ = splq;
+            return View(sanpham);
+        }
         public ActionResult TheoNCC()
         {
             List<NhaCungCap> lstNCC = db.NhaCungCaps.ToList();

@@ -77,9 +77,19 @@
                     <button type="submit" class="btn btn-success px-4 me-2">
                         <i class="bi bi-save"></i> Lưu thay đổi
                     </button>
-                    <a href="@Url.Action("DSNguoiDung")" class="btn btn-secondary px-4">
-                        <i class="bi bi-arrow-left"></i> Quay lại
-                    </a>
+
+                    @if (Model.MaVaiTro == 2)
+                    {
+                        <a href="@Url.Action("DSNhanVien", "User")" class="btn btn-secondary px-4">
+                            <i class="bi bi-arrow-left"></i> Quay lại
+                        </a>
+                    }@if (Model.MaVaiTro == 3)
+                    {
+                        <a href="@Url.Action("DSNguoiDung", "User")" class="btn btn-secondary px-4">
+                            <i class="bi bi-arrow-left"></i> Quay lại
+                        </a>
+                    }
+
                 </div>
             }
         </div>
