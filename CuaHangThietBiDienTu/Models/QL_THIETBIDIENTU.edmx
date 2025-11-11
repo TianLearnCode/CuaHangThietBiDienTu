@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="QL_WEB_THIETBIDIENTUModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="QL_WEB_THIETBIDIENTUModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="ChiTietDonHang">
           <Key>
             <PropertyRef Name="MaDonHang" />
@@ -43,6 +43,7 @@
           <Property Name="MaSP" Type="int" Nullable="false" />
           <Property Name="NgayDanhGia" Type="date" />
           <Property Name="NoiDung" Type="nvarchar(max)" />
+          <Property Name="Rate" Type="int" />
         </EntityType>
         <EntityType Name="DonHang">
           <Key>
@@ -454,8 +455,7 @@
             <End Role="ThongTinDatHang" EntitySet="ThongTinDatHang" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="QL_WEB_THIETBIDIENTUModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -505,6 +505,7 @@
           <Property Name="NoiDung" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="NguoiDung" Relationship="Self.FK__DanhGia__MaKH__74AE54BC" FromRole="DanhGia" ToRole="NguoiDung" />
           <NavigationProperty Name="SanPham" Relationship="Self.FK__DanhGia__MaSP__75A278F5" FromRole="DanhGia" ToRole="SanPham" />
+          <Property Name="Rate" Type="Int32" />
         </EntityType>
         <EntityType Name="DonHang">
           <Key>
@@ -982,6 +983,7 @@
           <EntitySetMapping Name="DanhGias">
             <EntityTypeMapping TypeName="QL_WEB_THIETBIDIENTUModel.DanhGia">
               <MappingFragment StoreEntitySet="DanhGia">
+                <ScalarProperty Name="Rate" ColumnName="Rate" />
                 <ScalarProperty Name="MaDanhGia" ColumnName="MaDanhGia" />
                 <ScalarProperty Name="MaKH" ColumnName="MaKH" />
                 <ScalarProperty Name="MaSP" ColumnName="MaSP" />

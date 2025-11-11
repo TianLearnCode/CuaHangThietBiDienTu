@@ -21,7 +21,39 @@ namespace CuaHangThietBiDienTu.Controllers
             var sanpham = db.SanPhams.FirstOrDefault(sp => sp.MaSP == maSP);
             var splq = db.SanPhams.Where(sp => sp.MaLoai == maSP && sp.MaSP != maSP).ToList();
             ViewBag.SPLQ = splq;
+
+            var cmt = db.DanhGias.Where(c => c.MaSP == maSP).OrderByDescending(c =>c.NgayDanhGia).ToList(); 
+            ViewBag.Cmt = cmt;  
             return View(sanpham);
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Comment(int maSP, string noidung, int rate)
+        {
+            if (Session["UserID"] == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            int manguoidung = (int)Session["UserID"];
+            if(string.IsNullOrEmpty(noidung) || rate < 1 || rate > 5)
+            {
+                TempData["Error"] = "Vui lòng nhập nội dung và chọn đánh giá hợp lệ.";
+                return RedirectToAction("ChiTietSP", new { maSP });
+            }
+            var danhgia = new DanhGia
+            {
+                MaSP = maSP,
+                MaKH = manguoidung,
+                NoiDung = noidung,
+                Rate = rate,
+                NgayDanhGia = DateTime.Now,
+
+            };
+            db.DanhGias.Add(danhgia);
+            db.SaveChanges();
+            return RedirectToAction("ChiTietSP", new { maSP });
         }
         public ActionResult TheoNCC()
         {

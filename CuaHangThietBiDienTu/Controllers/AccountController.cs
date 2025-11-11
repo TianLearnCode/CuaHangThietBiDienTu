@@ -215,7 +215,7 @@ namespace CuaHangThietBiDienTu.Controllers
                 case 2:
                     return RedirectToAction("NhanVienPage", "NhanVien");
                 default:
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("TrangChu", "SanPhams");
                 
             }
             

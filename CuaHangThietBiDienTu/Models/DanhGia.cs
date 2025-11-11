@@ -19,6 +19,7 @@ namespace CuaHangThietBiDienTu.Models
         public int MaSP { get; set; }
         public Nullable<System.DateTime> NgayDanhGia { get; set; }
         public string NoiDung { get; set; }
+        public Nullable<int> Rate { get; set; }
     
         public virtual NguoiDung NguoiDung { get; set; }
         public virtual SanPham SanPham { get; set; }

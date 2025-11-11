@@ -4,9 +4,9 @@
 }
 
 <h2>Chi tiết sản phẩm</h2>
-<div class="row border-2 shadow-lg p-3 rounded-4">
+<div class="row border-2 shadow-sm p-3 rounded-4 bg-white">
     <div class="col-lg-4 rounded-4 ">
-        <img src="~/Content/Images/ProductImg/@Model.HinhAnh" class="w-100"/>
+        <img src="~/Content/Images/ProductImg/@Model.HinhAnh" class="w-100" />
         <div class="row">
             @foreach (var anh in Model.HINHANHs)
             {
@@ -30,8 +30,76 @@
         </div>
     </div>
 
-    
+
 </div>
+
+<div class="comment mt-4">
+    <h4>Đánh giá</h4>
+
+    @if (ViewBag.Cmt != null && ((List<CuaHangThietBiDienTu.Models.DanhGia>)ViewBag.Cmt).Any())
+    {
+        foreach (var bl in (List<CuaHangThietBiDienTu.Models.DanhGia>)ViewBag.Cmt)
+        {
+            <div class="p-2 mb-2 rounded-3 bg-white" style="border: 2px solid #b7f0f8">
+                <p><strong>@bl.NguoiDung.HoTen</strong> - @bl.NgayDanhGia.Value.ToString("dd/MM/yyyy")</p>
+                <p>
+                    Đánh giá:
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        if (i <= bl.Rate)
+                        {
+                            <text><span class="text-warning">&#9733;</span></text>
+                        }
+                        else
+                        {
+                            <text><span class="text-muted">&#9734;</span></text>
+                        }
+                    }
+                </p>
+                <p>@bl.NoiDung</p>
+            </div>
+        }
+    }
+    else
+    {
+        <p>Chưa có bình luận nào.</p>
+    }
+
+    @if (Session["UserID"] != null)
+    {
+        using (Html.BeginForm("Comment", "SanPhams", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            @Html.Hidden("maSP", Model.MaSP)
+            <div class="p-3">
+                <div class="mb-3">
+                    <label>Nội dung bình luận</label>
+                    <textarea name="noiDung" class="form-control" style="width:100% !important;" rows="3" required></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label>Đánh giá</label>
+                    <select name="rate" class="form-select" required>
+                        <option value="">Chọn đánh giá</option>
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <option value="@i" class="w-100">@i sao</option>
+                        }
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Gửi bình luận</button>
+            </div>
+
+           
+        }
+    }
+    else
+    {
+        <p class="text-end"><a href="@Url.Action("Login", "Account")" class="btn btn-primary ">Đăng nhập</a> để bình luận sản phẩm.</p>
+    }
+</div>
+
 <div class="row mt-5">
     @if (ViewBag.SPLQ != null)
     {
