@@ -8,6 +8,8 @@
 
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    <link href="~/Content/custom.css" rel="stylesheet" />
+
 </head>
 
 <style>
@@ -17,6 +19,7 @@
         border-radius: 8px;
         margin-bottom: 10px;
     }
+    
 
         .sidebar a {
             margin-left: 8px;
@@ -64,9 +67,12 @@
     body {
         background-color: rgb(248, 249, 250);
     }
+    
+    
+
 </style>
 <body>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
+    <nav class="main-bg navbar navbar-expand-sm navbar-toggleable-sm  ">
         <div class="container">
             @Html.ActionLink("CuaHangDienTu.com", "TrangChu", "SanPhams", new { area = "" }, new { @class = "navbar-brand" })
             <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
@@ -113,10 +119,10 @@
 
     <div class="container-fluid body-content">
         <div class="row">
-            <div class="col-lg-3">
+            <div class="col-lg-3 sidebar-color">
 
-                <div class="side-bar bg-white p-3" style="width:100%; min-height:100vh;">
-                    <h3 class="sidebar-title text-primary border-bottom pb-2 mb-3">
+                <div class="side-bar p-3" style="width:100%; min-height:100vh;">
+                    <h3 class="sidebar-title text-dark border-bottom pb-2 mb-3">
                         <i class="fa fa-bars me-2"></i> Danh mục
                     </h3>
                     <ul class="list-unstyled">

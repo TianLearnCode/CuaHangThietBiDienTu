@@ -1,0 +1,17 @@
+﻿body {
+}
+.main-bg{
+    background: #ffcc00;
+}
+.body-content {
+    margin-top: 0px;
+    padding-left: 0px;
+}
+.sidebar-color {
+    background: #ffe063;
+}
+input,
+select,
+textarea {
+    width: 100%;
+}

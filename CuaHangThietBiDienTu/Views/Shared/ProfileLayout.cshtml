@@ -9,6 +9,8 @@
     <title>@ViewBag.Title - My ASP.NET Application</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    <link href="~/Content/custom.css" rel="stylesheet" />
+
 </head>
 <style>
     body {
@@ -16,7 +18,7 @@
     }
 </style>
 <body>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
+    <nav class="navbar main-bg navbar-expand-sm navbar-toggleable-sm navbar-dark">
         <div class="container">
             @Html.ActionLink("CuaHangDienTu.com", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
@@ -59,7 +61,7 @@
 
 
 
-    <div class="container body-content">
+    <div class="container body-content mt-3">
         @RenderBody()
 
 

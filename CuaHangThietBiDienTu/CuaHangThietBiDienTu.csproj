@@ -219,6 +219,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="Content\custom.css" />
     <Content Include="Content\Images\ProductImg\s24.jpg" />
     <Content Include="Content\Images\ProductImg\iphone15.jpg" />
     <Content Include="Content\Images\ProductImg\ipadair.jpg" />
