@@ -1,0 +1,109 @@
+﻿@model List<CuaHangThietBiDienTu.Models.OrderDetailViewModel>
+@{
+    var order = ViewBag.Order as CuaHangThietBiDienTu.Models.DonHang;
+    var thongTinDatHang = ViewBag.ThongTinDatHang as CuaHangThietBiDienTu.Models.ThongTinDatHang;
+    ViewBag.Title = "Chi Tiết Đơn Hàng #" + order.MaDonHang;
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-file-invoice me-2"></i>CHI TIẾT ĐƠN HÀNG #@order.MaDonHang</h2>
+        <a href="@Url.Action("OrderHistory")" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Quay lại
+        </a>
+    </div>
+
+    <!-- Thông tin đơn hàng -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Thông tin đơn hàng</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Mã đơn hàng:</strong> #@order.MaDonHang</p>
+                    <p><strong>Ngày đặt:</strong> @order.NgayDat.ToString("dd/MM/yyyy HH:mm")</p>
+                    <p>
+                        <strong>Trạng thái:</strong>
+                        <span class="badge
+                            @(order.TinhTrangGiaoHang == "Đã giao" ? "bg-success" :
+                              order.TinhTrangGiaoHang == "Đang giao" ? "bg-primary" :
+                              order.TinhTrangGiaoHang == "Đã hủy" ? "bg-danger" : "bg-warning")">
+                            @order.TinhTrangGiaoHang
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-user me-2"></i>Thông tin giao hàng</h5>
+                </div>
+                <div class="card-body">
+                    @if (thongTinDatHang != null)
+                    {
+                        <p><strong>Người nhận:</strong> @thongTinDatHang.TenNguoiNhan</p>
+                        <p><strong>Số điện thoại:</strong> @thongTinDatHang.SoDienThoai</p>
+                        <p><strong>Địa chỉ:</strong> @thongTinDatHang.DiaChiNhanHang</p>
+                        if (!string.IsNullOrEmpty(thongTinDatHang.GhiChu))
+                        {
+                            <p><strong>Ghi chú:</strong> @thongTinDatHang.GhiChu</p>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chi tiết sản phẩm -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0"><i class="fas fa-shopping-cart me-2"></i>Sản phẩm đã đặt</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th>Đơn giá</th>
+                            <th>Số lượng</th>
+                            <th>Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        @if (!string.IsNullOrEmpty(item.Image))
+                                        {
+                                            <img src="@Url.Content("~/Content/Images/ProductImg/" + item.Image)"
+                                                 alt="@item.ProductName"
+                                                 class="img-thumbnail me-3"
+                                                 style="width: 60px; height: 60px; object-fit: cover;">
+                                        }
+                                        <div>
+                                            <h6 class="mb-1">@item.ProductName</h6>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="align-middle">@item.Price.ToString("N0") ₫</td>
+                                <td class="align-middle">@item.Quantity</td>
+                                <td class="align-middle fw-bold text-primary">@item.Total.ToString("N0") ₫</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot class="table-secondary">
+                        <tr>
+                            <td colspan="3" class="text-end"><strong>Tổng cộng:</strong></td>
+                            <td class="fw-bold text-danger h5">@order.TongTien?.ToString("N0") ₫</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

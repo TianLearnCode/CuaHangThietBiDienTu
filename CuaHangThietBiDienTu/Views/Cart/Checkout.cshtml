@@ -1,0 +1,205 @@
+﻿@model CuaHangThietBiDienTu.Models.CheckoutViewModel
+
+@{
+    ViewBag.Title = "Thanh Toán";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4"><i class="fas fa-credit-card me-2"></i>THANH TOÁN</h2>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    @using (Html.BeginForm("Checkout", "Cart", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="row">
+            <!-- Thông tin giao hàng -->
+            <div class="col-lg-8">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-shipping-fast me-2"></i>Thông tin giao hàng</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label required">Họ tên</label>
+                                @Html.TextBoxFor(model => model.FullName, new { @class = "form-control", required = "required" })
+                                @Html.ValidationMessageFor(model => model.FullName, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label required">Số điện thoại</label>
+                                @Html.TextBoxFor(model => model.Phone, new { @class = "form-control", required = "required" })
+                                @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label required">Email</label>
+                            @Html.TextBoxFor(model => model.Email, new { @class = "form-control", type = "email", required = "required" })
+                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label required">Địa chỉ giao hàng</label>
+                            @Html.TextAreaFor(model => model.Address, new { @class = "form-control", rows = "3", required = "required", placeholder = "Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành phố" })
+                            @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Ghi chú</label>
+                            @Html.TextAreaFor(model => model.Notes, new { @class = "form-control", rows = "2", placeholder = "Ghi chú về đơn hàng (không bắt buộc)" })
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phương thức thanh toán -->
+                <div class="card shadow-sm">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="fas fa-money-bill-wave me-2"></i>Phương thức thanh toán</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="PaymentMethod" id="cod" value="COD" checked>
+                            <label class="form-check-label" for="cod">
+                                <i class="fas fa-money-bill me-2"></i>Thanh toán khi nhận hàng (COD)
+                            </label>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="PaymentMethod" id="banking" value="BANKING">
+                            <label class="form-check-label" for="banking">
+                                <i class="fas fa-university me-2"></i>Chuyển khoản ngân hàng
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="PaymentMethod" id="momo" value="MOMO">
+                            <label class="form-check-label" for="momo">
+                                <i class="fas fa-mobile-alt me-2"></i>Ví điện tử MoMo
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tóm tắt đơn hàng -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm sticky-top" style="top: 100px;">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="fas fa-receipt me-2"></i>ĐƠN HÀNG CỦA BẠN</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="order-summary">
+                            @if (Model.Cart != null && Model.Cart.Items.Any())
+                            {
+                                foreach (var item in Model.Cart.Items)
+                                {
+                                    <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                                        <div>
+                                            <small class="fw-bold">@item.ProductName</small>
+                                            <br>
+                                            <small class="text-muted">@item.Quantity x @item.ActualPrice.ToString("N0") ₫</small>
+                                        </div>
+                                        <small class="fw-bold">@item.Total.ToString("N0") ₫</small>
+                                    </div>
+                                }
+
+                                <div class="d-flex justify-content-between mt-3">
+                                    <span>Tạm tính:</span>
+                                    <span>@Model.Cart.GetTotalAmount().ToString("N0") ₫</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>Phí vận chuyển:</span>
+                                    <span class="text-success">Miễn phí</span>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between mb-3">
+                                    <strong>Tổng cộng:</strong>
+                                    <strong class="text-danger h5">@Model.Cart.GetTotalAmount().ToString("N0") ₫</strong>
+                                </div>
+                            }
+                            else
+                            {
+                                <p class="text-muted">Giỏ hàng trống</p>
+                            }
+
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="agreeTerms" required>
+                                <label class="form-check-label small" for="agreeTerms">
+                                    Tôi đồng ý với <a href="#" class="text-decoration-none">điều khoản và điều kiện</a> mua hàng
+                                </label>
+                            </div>
+
+                            <button type="submit" class="btn btn-success btn-lg w-100">
+                                <i class="fas fa-check-circle me-2"></i>HOÀN TẤT ĐƠN HÀNG
+                            </button>
+
+                            <a href="@Url.Action("Index", "Cart")" class="btn btn-outline-secondary w-100 mt-2">
+                                <i class="fas fa-arrow-left me-2"></i>Quay lại giỏ hàng
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            // Bootstrap validation
+            'use strict';
+            var forms = document.querySelectorAll('.needs-validation');
+            Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+
+            // Kiểm tra điều khoản trước khi submit
+            $('form').submit(function (e) {
+                if (!$('#agreeTerms').is(':checked')) {
+                    e.preventDefault();
+                    alert('Vui lòng đồng ý với điều khoản và điều kiện mua hàng');
+                    return false;
+                }
+            });
+        });
+    </script>
+
+    <style>
+        .required::after {
+            content: " *";
+            color: #dc3545;
+        }
+
+        .sticky-top {
+            z-index: 1020;
+        }
+
+        .order-summary {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .form-check-input:checked {
+            background-color: #198754;
+            border-color: #198754;
+        }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .sticky-top {
+                position: relative !important;
+                top: 0 !important;
+            }
+        }
+    </style>
+}

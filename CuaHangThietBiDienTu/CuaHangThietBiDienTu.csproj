@@ -132,12 +132,14 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\CartController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\SanPhamsController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Cart.cs" />
     <Compile Include="Models\ChiTietDonHang.cs">
       <DependentUpon>QL_THIETBIDIENTU.tt</DependentUpon>
     </Compile>
@@ -171,6 +173,7 @@
     <Compile Include="Models\NhapHang.cs">
       <DependentUpon>QL_THIETBIDIENTU.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\OrderDetailViewModel.cs" />
     <Compile Include="Models\ProfileUserModel.cs" />
     <Compile Include="Models\QL_THIETBIDIENTU.Context.cs">
       <AutoGen>True</AutoGen>
@@ -306,6 +309,12 @@
     <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\SanPhams\_MenuLoaiSanPham.cshtml" />
     <Content Include="Views\SanPhams\_MenuNhaCungCap.cshtml" />
+    <Content Include="Views\Cart\Index.cshtml" />
+    <Content Include="Views\Shared\_LayoutGioHang.cshtml" />
+    <Content Include="Views\Account\OrderDetails.cshtml" />
+    <Content Include="Views\Account\OrderHistory.cshtml" />
+    <Content Include="Views\Cart\Checkout.cshtml" />
+    <Content Include="Views\Cart\OrderConfirmation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

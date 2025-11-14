@@ -5,6 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Net.Mail;
+using System.Net;
+using System.Text;
 
 namespace CuaHangThietBiDienTu.Controllers
 {
@@ -172,54 +175,8 @@ namespace CuaHangThietBiDienTu.Controllers
             return View(user);
         }
 
-        public ActionResult Login()
-        {
-            return View();
-        }
-        // POST: Account
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Login(string email, string password)
-        {
-            if(string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
-            {
-                ViewBag.ErrorMessage = "Vui lòng nhập đầy đủ email và mật khẩu.";
-                return View();
-            }
-            var user = (from tk in db.TaiKhoan
-                        join nd in db.NguoiDung on tk.MaNguoiDung equals nd.MaNguoiDung
-                        where tk.Email == email && tk.MatKhau == password
-                        select new
-                        {
-                            nd.MaNguoiDung,
-                            nd.HoTen,
-                            tk.Email,
-                            tk.MatKhau,
-                            nd.MaVaiTro
-                        }).FirstOrDefault();
-            if (user == null)
-            {
-                ViewBag.ErrorMessage1 = "Email hoặc mật khẩu không đúng.";
-                return View();
 
-            }
-            Session["UserID"] = user.MaNguoiDung;
-            Session["UserName"] = user.HoTen;
-            Session["Email"] = user.Email;
-            Session["Password"] = user.MatKhau;
-            Session["Role"] = user.MaVaiTro;
-            switch (user.MaVaiTro)
-            {
-                case 1:
-                    return RedirectToAction("AdminPage", "Admin");
-                case 2:
-                    return RedirectToAction("NhanVienPage", "NhanVien");
-                default:
-                    return RedirectToAction("TrangChu", "SanPhams");
-                
-            }
-            
-        }
+        
 
         //register
         public ActionResult Register()
@@ -332,6 +289,113 @@ namespace CuaHangThietBiDienTu.Controllers
             {
                 return View();
             }
+        }
+
+        public ActionResult Login(string returnUrl)
+        {
+            ViewBag.ReturnUrl = returnUrl;
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+
+        public ActionResult Login(string email, string password, string returnUrl)
+        {
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+            {
+                ViewBag.ErrorMessage = "Vui lòng nhập đầy đủ email và mật khẩu.";
+                return View();
+            }
+
+            var user = (from tk in db.TaiKhoan
+                        join nd in db.NguoiDung on tk.MaNguoiDung equals nd.MaNguoiDung
+                        where tk.Email == email && tk.MatKhau == password
+                        select new
+                        {
+                            nd.MaNguoiDung,
+                            nd.HoTen,
+                            tk.Email,
+                            tk.MatKhau,
+                            nd.MaVaiTro
+                        }).FirstOrDefault();
+
+            if (user == null)
+            {
+                ViewBag.ErrorMessage1 = "Email hoặc mật khẩu không đúng.";
+                return View();
+            }
+
+            Session["UserID"] = user.MaNguoiDung;
+            Session["UserName"] = user.HoTen;
+            Session["Email"] = user.Email;
+            Session["Role"] = user.MaVaiTro;
+
+            // Xử lý redirect sau khi đăng nhập
+            if (!string.IsNullOrEmpty(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+
+            switch (user.MaVaiTro)
+            {
+                case 1:
+                    return RedirectToAction("AdminPage", "Admin");
+                case 2:
+                    return RedirectToAction("NhanVienPage", "NhanVien");
+                default:
+                    return RedirectToAction("TrangChu", "SanPhams");
+            }
+        }
+
+        public ActionResult OrderHistory()
+        {
+            if (Session["UserID"] == null)
+            {
+                return RedirectToAction("Login", new { returnUrl = Url.Action("OrderHistory") });
+            }
+
+            int maNguoiDung = (int)Session["UserID"];
+
+            var orders = (from dh in db.DonHang
+                          where dh.MaKH == maNguoiDung
+                          orderby dh.NgayDat descending
+                          select dh).ToList();
+
+            return View(orders);
+        }
+
+        public ActionResult OrderDetails(int id)
+        {
+            if (Session["UserID"] == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var order = db.DonHang.Find(id);
+            if (order == null || order.MaKH != (int)Session["UserID"])
+            {
+                return HttpNotFound();
+            }
+
+            var orderDetails = (from ctdh in db.ChiTietDonHang
+                                join sp in db.SanPham on ctdh.MaSP equals sp.MaSP
+                                where ctdh.MaDonHang == id
+                                select new OrderDetailViewModel
+                                {
+                                    ProductName = sp.TenSP,
+                                    Price = ctdh.DonGia ?? 0,
+                                    Quantity = ctdh.SoLuong ?? 0,
+                                    Total = (ctdh.DonGia ?? 0) * (ctdh.SoLuong ?? 0),
+                                    Image = sp.HinhAnh
+                                }).ToList();
+
+            // Lấy thông tin đặt hàng
+            var thongTinDatHang = db.ThongTinDatHang.FirstOrDefault(t => t.MaDonHang == id);
+            ViewBag.ThongTinDatHang = thongTinDatHang;
+            ViewBag.Order = order;
+
+            return View(orderDetails);
         }
     }
 }
