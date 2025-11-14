@@ -3,186 +3,443 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title - Cửa Hàng Điện Tử</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-    <link href="~/Content/custom.css" rel="stylesheet" />
 
-</head>
-
-<style>
-    .sidebar {
-        padding: 10px;
-        border: solid 1px #b9b9b9;
-        border-radius: 8px;
-        margin-bottom: 10px;
-    }
-    
-
-        .sidebar a {
-            margin-left: 8px;
-            padding: 8px;
-            display: block;
-            text-decoration: none;
+    <style>
+        /* Giữ nguyên các style cũ */
+        .sidebar {
+            padding: 10px;
+            border: solid 1px #b9b9b9;
+            border-radius: 8px;
+            margin-bottom: 10px;
         }
 
-    .menu-item {
-        transition: all 0.2s ease-in-out;
-    }
+            .sidebar a {
+                margin-left: 8px;
+                padding: 8px;
+                display: block;
+                text-decoration: none;
+            }
 
-        .menu-item:hover {
-            background-color: #0d6efd; /* Màu xanh Bootstrap */
+        .menu-item {
+            transition: all 0.2s ease-in-out;
+            border-radius: 6px;
+        }
+
+            .menu-item:hover {
+                background-color: #0d6efd;
+                color: white !important;
+                transform: translateX(5px);
+            }
+
+                .menu-item:hover i {
+                    color: white;
+                }
+
+        .submenu-item {
+            color: #333;
+            text-decoration: none;
+            transition: all 0.2s ease-in-out;
+            border-radius: 4px;
+            padding: 6px 12px;
+            margin: 2px 0;
+        }
+
+            .submenu-item:hover {
+                background-color: #e9ecef;
+                color: #0d6efd;
+                text-decoration: none;
+                transform: translateX(3px);
+            }
+
+        .active-menu {
+            background-color: #0d6efd !important;
             color: white !important;
         }
 
-            .menu-item:hover i {
+            .active-menu i {
                 color: white;
             }
 
-    /* Hiệu ứng hover cho menu con */
-    .submenu-item {
-        color: #333;
-        text-decoration: none;
-        transition: all 0.2s ease-in-out;
-    }
-
-        .submenu-item:hover {
-            background-color: #e9ecef;
-            color: #0d6efd;
-            text-decoration: none;
+        body {
+            background-color: rgb(248, 249, 250);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-    /* Mục đang active */
-    .active-menu {
-        background-color: #0d6efd !important;
-        color: white !important;
-    }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
 
-        .active-menu i {
+        .side-bar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            margin: 10px;
+        }
+
+        .sidebar-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #dc3545;
             color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-    body {
-        background-color: rgb(248, 249, 250);
-    }
-    
-    
+        .user-dropdown {
+            min-width: 200px;
+        }
 
-</style>
-<body>
-    <nav class="main-bg navbar navbar-expand-sm navbar-toggleable-sm  ">
+        .footer {
+            background: #343a40;
+            color: white;
+            padding: 30px 0;
+            margin-top: 50px;
+        }
+
+        .nav-link {
+            transition: color 0.2s ease-in-out;
+        }
+
+            .nav-link:hover {
+                color: #0dcaf0 !important;
+            }
+
+        /* Ẩn bộ lọc trên các trang không phải sản phẩm */
+        .product-filter {
+            display: none;
+        }
+
+        .product-page .product-filter {
+            display: block;
+        }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .side-bar {
+                min-height: auto !important;
+                margin-bottom: 20px;
+            }
+
+            .col-lg-3 {
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body class="@(ViewContext.RouteData.Values["controller"].ToString() == "SanPhams" ? "product-page" : "")">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
         <div class="container">
             @Html.ActionLink("CuaHangDienTu.com", "TrangChu", "SanPhams", new { area = "" }, new { @class = "navbar-brand" })
-            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    <li>@Html.ActionLink("Trang chủ", "TrangChu", "SanPhams", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Sản phẩm", "SanPham", "SanPhams", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Liên hệ", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        @Html.ActionLink("Trang chủ", "TrangChu", "SanPhams", new { area = "" },
+                         new { @class = "nav-link" + (ViewContext.RouteData.Values["action"].ToString() == "TrangChu" ? " active" : "") })
+                    </li>
+                    <li class="nav-item">
+                        @Html.ActionLink("Sản phẩm", "SanPham", "SanPhams", new { area = "" },
+                         new { @class = "nav-link" + (ViewContext.RouteData.Values["action"].ToString() == "SanPham" ? " active" : "") })
+                    </li>
+                    <li class="nav-item">
+                        @Html.ActionLink("Liên hệ", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })
+                    </li>
                     @if (Session["Role"] != null && Convert.ToInt32(Session["Role"]) == 1)
                     {
-                        <li>@Html.ActionLink("Admin Page", "AdminPage", "Admin", new { area = "" }, new { @class = "nav-link" })</li>
-                    }@if (Session["Role"] != null && Convert.ToInt32(Session["Role"]) == 2)
-                    {
-                        <li>@Html.ActionLink("Quản lý", "StaffPage", "NhanVien", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li class="nav-item">
+                            @Html.ActionLink("Quản lý", "Index", "SanPhams", new { area = "" },
+                             new { @class = "nav-link text-warning" + (ViewContext.RouteData.Values["controller"].ToString() == "SanPhams" && ViewContext.RouteData.Values["action"].ToString() == "Index" ? " active" : "") })
+                        </li>
+                    }
+                </ul>
 
+                <ul class="navbar-nav ms-auto">
+                    <!-- Giỏ hàng -->
+                    <li class="nav-item me-3">
+                        <a href="@Url.Action("Index", "Cart")" class="nav-link position-relative">
+                            <i class="fas fa-shopping-cart fa-lg"></i>
+                            <span class="cart-badge" id="cartCount">
+                                @(Session["CartCount"] != null ? Session["CartCount"] : "0")
+                            </span>
+                        </a>
+                    </li>
+
+                    <!-- User Info -->
+                    @if (Session["Email"] != null)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown"
+                               role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user-circle me-2 fa-lg"></i>
+                                <span class="d-none d-sm-inline">@Session["UserName"]</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end user-dropdown" aria-labelledby="userDropdown">
+                                <li>
+                                    <a class="dropdown-item" href="@Url.Action("Profile", "Account")">
+                                        <i class="fas fa-user me-2"></i>Thông tin cá nhân
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="@Url.Action("OrderHistory", "Account")">
+                                        <i class="fas fa-history me-2"></i>Lịch sử đơn hàng
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="@Url.Action("Logout", "Account")">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a href="@Url.Action("Login", "Account")" class="nav-link">
+                                <i class="fas fa-sign-in-alt me-1"></i>Đăng nhập
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="@Url.Action("Register", "Account")" class="nav-link">
+                                <i class="fas fa-user-plus me-1"></i>Đăng ký
+                            </a>
+                        </li>
                     }
                 </ul>
             </div>
         </div>
-        <div class="text-end p-2 text-white">
-            @if (Session["Email"] != null)
-            {
-                <a href="@Url.Action("Profile", "Account")"
-                   class="nav-link text-decoration-none"
-                   style="white-space: nowrap;">
-                     Xin chào, @Session["UserName"]!
-                </a>
-                
-            }
-            else
-            {
-                <a href="@Url.Action("Login", "Account")"
-                   class="nav-link text-decoration-none">
-                    Đăng nhập
-                </a>
-            }
-        </div>
     </nav>
-
-
 
     <div class="container-fluid body-content">
         <div class="row">
-            <div class="col-lg-3 sidebar-color">
+            <!-- Sidebar với bộ lọc -->
+            <div class="col-lg-3 col-md-4 mb-4">
+                <!-- Bộ lọc sản phẩm - Chỉ hiển thị trên trang sản phẩm -->
+                <div class="product-filter">
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="fas fa-filter me-2"></i>BỘ LỌC SẢN PHẨM</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Search -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Tìm kiếm</label>
+                                @using (Html.BeginForm("SanPham", "SanPhams", FormMethod.Get))
+                                {
+                                    <div class="input-group">
+                                        <input type="text" name="searchString" class="form-control"
+                                               placeholder="Tên sản phẩm..." value="@ViewBag.SearchString">
+                                        <button class="btn btn-primary" type="submit">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                }
+                            </div>
 
-                <div class="side-bar p-3" style="width:100%; min-height:100vh;">
-                    <h3 class="sidebar-title text-dark border-bottom pb-2 mb-3">
-                        <i class="fa fa-bars me-2"></i> Danh mục
-                    </h3>
-                    <ul class="list-unstyled">
+                            <!-- Loại sản phẩm -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Loại sản phẩm</label>
+                                @{
+                                    var maLoaiList = ViewBag.MaLoai as System.Web.Mvc.SelectList;
+                                }
+                                @if (maLoaiList != null)
+                                {
+                                    using (Html.BeginForm("SanPham", "SanPhams", FormMethod.Get))
+                                    {
+                                        @Html.DropDownList("maLoai", maLoaiList,
+                                            "Tất cả loại", new { @class = "form-select", onchange = "this.form.submit()" })
+                                    }
+                                }
+                                else
+                                {
+                                    <select class="form-select" disabled>
+                                        <option>Không có dữ liệu</option>
+                                    </select>
+                                }
+                            </div>
 
-                        <!-- Menu Loại sản phẩm -->
-                        <li class="mb-2">
-                            <a class="menu-item d-flex align-items-center justify-content-between text-dark text-decoration-none px-2 py-2 rounded"
-                               data-bs-toggle="collapse"
-                               href="#collapseLoaiSanPham"
-                               role="button"
-                               aria-expanded="false"
-                               aria-controls="collapseLoaiSanPham">
-                                <span><i class="fa-regular fa-rectangle-list"></i> Loại sản phẩm</span>
-                                <i class="fa fa-chevron-down small"></i>
+                            <!-- Nhà cung cấp -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Nhà cung cấp</label>
+                                @{
+                                    var maNCCList = ViewBag.MaNCC as System.Web.Mvc.SelectList;
+                                }
+                                @if (maNCCList != null)
+                                {
+                                    using (Html.BeginForm("SanPham", "SanPhams", FormMethod.Get))
+                                    {
+                                        @Html.DropDownList("maNCC", maNCCList,
+                                            "Tất cả NCC", new { @class = "form-select", onchange = "this.form.submit()" })
+                                    }
+                                }
+                                else
+                                {
+                                    <select class="form-select" disabled>
+                                        <option>Không có dữ liệu</option>
+                                    </select>
+                                }
+                            </div>
+
+                            <!-- Reset -->
+                            <a href="@Url.Action("SanPham")" class="btn btn-outline-secondary w-100">
+                                <i class="fas fa-refresh me-1"></i> Xóa bộ lọc
                             </a>
-
-                            <ul class="collapse list-unstyled ps-4 mt-2" id="collapseLoaiSanPham">
-                                <li class="mb-1">
-                                    @Html.Action("TheoLoaiSP", "SanPhams")
-                                </li>
-                            </ul>
-                        </li>
-
-                        <!-- Menu Nhà cung cấp -->
-                        <li class="mb-2">
-                            <a class="menu-item d-flex align-items-center justify-content-between text-dark text-decoration-none px-2 py-2 rounded"
-                               data-bs-toggle="collapse"
-                               href="#collapseNhaCungCap"
-                               role="button"
-                               aria-expanded="false"
-                               aria-controls="collapseNhaCungCap">
-                                <span><i class="fa fa-truck me-2"></i> Nhà cung cấp</span>
-                                <i class="fa fa-chevron-down small"></i>
-                            </a>
-
-                            <ul class="collapse list-unstyled ps-4 mt-2" id="collapseNhaCungCap">
-                                <li class="mb-1">
-                                    @Html.Action("TheoNCC", "SanPhams")
-                                </li>
-                            </ul>
-                        </li>
-
-                    </ul>
-
+                        </div>
+                    </div>
                 </div>
 
-            </div>
-            <div class="col-lg-9 mt-3">
-                @RenderBody()
+                <!-- Menu Categories -->
+                <div class="side-bar bg-white p-3">
+                    <h3 class="sidebar-title text-primary border-bottom pb-2 mb-3">
+                        <i class="fas fa-bars me-2"></i> Danh mục
+                    </h3>
 
+                    <!-- Menu Loại sản phẩm -->
+                    <div class="mb-3">
+                        <a class="menu-item d-flex align-items-center justify-content-between text-dark text-decoration-none px-2 py-2 rounded"
+                           data-bs-toggle="collapse"
+                           href="#collapseLoaiSanPham"
+                           role="button"
+                           aria-expanded="true"
+                           aria-controls="collapseLoaiSanPham">
+                            <span><i class="fas fa-list me-2"></i> Loại sản phẩm</span>
+                            <i class="fas fa-chevron-down small"></i>
+                        </a>
+                        <div class="collapse show ps-3 mt-2" id="collapseLoaiSanPham">
+                            @Html.Action("TheoLoaiSP", "SanPhams")
+                        </div>
+                    </div>
+
+                    <!-- Menu Nhà cung cấp -->
+                    <div class="mb-3">
+                        <a class="menu-item d-flex align-items-center justify-content-between text-dark text-decoration-none px-2 py-2 rounded"
+                           data-bs-toggle="collapse"
+                           href="#collapseNhaCungCap"
+                           role="button"
+                           aria-expanded="true"
+                           aria-controls="collapseNhaCungCap">
+                            <span><i class="fas fa-truck me-2"></i> Nhà cung cấp</span>
+                            <i class="fas fa-chevron-down small"></i>
+                        </a>
+                        <div class="collapse show ps-3 mt-2" id="collapseNhaCungCap">
+                            @Html.Action("TheoNCC", "SanPhams")
+                        </div>
+                    </div>
+
+                    <!-- Menu hỗ trợ -->
+                    <div class="mb-2">
+                        <a class="menu-item d-flex align-items-center text-dark text-decoration-none px-2 py-2 rounded"
+                           href="@Url.Action("Contact", "Home")">
+                            <i class="fas fa-headset me-2"></i> Hỗ trợ
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-9 col-md-8">
+                @RenderBody()
             </div>
         </div>
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
     </div>
 
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5>Cửa Hàng Điện Tử</h5>
+                    <p>Chuyên cung cấp các thiết bị điện tử chất lượng cao với giá cả hợp lý.</p>
+                    <div class="social-links">
+                        <a href="#" class="text-white me-3"><i class="fab fa-facebook fa-lg"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-instagram fa-lg"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5>Liên kết nhanh</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="@Url.Action("TrangChu", "SanPhams")" class="text-white text-decoration-none">Trang chủ</a></li>
+                        <li><a href="@Url.Action("SanPham", "SanPhams")" class="text-white text-decoration-none">Sản phẩm</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Giới thiệu</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Liên hệ</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5>Thông tin liên hệ</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-map-marker-alt me-2"></i> 123 Đường ABC, Quận 1, TP.HCM</li>
+                        <li><i class="fas fa-phone me-2"></i> (028) 1234 5678</li>
+                        <li><i class="fas fa-envelope me-2"></i> info@cuahangdientu.com</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="text-center">
+                <p>&copy; @DateTime.Now.Year - Cửa Hàng Điện Tử. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+
+    <script>
+        $(document).ready(function () {
+            // Cập nhật số lượng giỏ hàng
+            function updateCartCount() {
+                $.get('@Url.Action("GetCartCount", "Cart")', function (data) {
+                    $('#cartCount').text(data);
+                });
+            }
+
+            // Cập nhật mỗi 30 giây
+            setInterval(updateCartCount, 30000);
+
+            // Active menu item
+            var currentUrl = window.location.href;
+            $('.nav-link').each(function () {
+                if (this.href === currentUrl) {
+                    $(this).addClass('active');
+                }
+            });
+
+            // Auto-collapse navbar on mobile after click
+            $('.navbar-nav>li>a').on('click', function () {
+                $('.navbar-collapse').collapse('hide');
+            });
+
+            // Xử lý active state cho menu sidebar
+            $('.list-group-item').each(function () {
+                if (this.href === currentUrl) {
+                    $(this).addClass('active');
+                }
+            });
+        });
+    </script>
+
     @RenderSection("scripts", required: false)
 </body>
 </html>

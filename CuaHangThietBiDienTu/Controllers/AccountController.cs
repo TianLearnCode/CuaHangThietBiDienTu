@@ -10,7 +10,7 @@ namespace CuaHangThietBiDienTu.Controllers
 {
     public class AccountController : Controller
     {
-        private QL_WEB_THIETBIDIENTUEntities db = new QL_WEB_THIETBIDIENTUEntities();
+        private QL_THIETBIDIENTUEntities db = new QL_THIETBIDIENTUEntities();
 
         [HttpGet]
         public ActionResult EditProfile()
@@ -19,7 +19,7 @@ namespace CuaHangThietBiDienTu.Controllers
                 return RedirectToAction("Login");
 
             int maNguoiDung = (int)Session["UserID"];
-            var nguoiDung = db.NguoiDungs.FirstOrDefault(x => x.MaNguoiDung == maNguoiDung);
+            var nguoiDung = db.NguoiDung.FirstOrDefault(x => x.MaNguoiDung == maNguoiDung);
 
             if (nguoiDung == null)
                 return HttpNotFound();
@@ -34,7 +34,7 @@ namespace CuaHangThietBiDienTu.Controllers
                 return RedirectToAction("Login");
 
             int maNguoiDung = (int)Session["UserID"];
-            var existingUser = db.NguoiDungs.Find(maNguoiDung);
+            var existingUser = db.NguoiDung.Find(maNguoiDung);
 
             if (existingUser == null)
                 return HttpNotFound();
@@ -77,7 +77,7 @@ namespace CuaHangThietBiDienTu.Controllers
         public ActionResult ForgotPassword(string email)
         {
             
-            var user = db.TaiKhoans.FirstOrDefault(n => n.Email == email);
+            var user = db.TaiKhoan.FirstOrDefault(n => n.Email == email);
             if (user == null)
             {
                 ViewBag.ErrorMessage = "Email không tồn tại trong hệ thống.";
@@ -114,7 +114,7 @@ namespace CuaHangThietBiDienTu.Controllers
                 return View();
             }
 
-           var user = db.TaiKhoans.FirstOrDefault(tk => tk.Email == email);
+           var user = db.TaiKhoan.FirstOrDefault(tk => tk.Email == email);
 
             if (user != null)
             {
@@ -145,9 +145,9 @@ namespace CuaHangThietBiDienTu.Controllers
                 return RedirectToAction("Login", "Account");
             }
             string email = Session["Email"].ToString();
-            var user = (from tk in db.TaiKhoans
-                      join nd in db.NguoiDungs on tk.MaNguoiDung equals nd.MaNguoiDung
-                      join vt in db.VaiTroes on nd.MaVaiTro equals vt.MaVaiTro
+            var user = (from tk in db.TaiKhoan
+                      join nd in db.NguoiDung on tk.MaNguoiDung equals nd.MaNguoiDung
+                      join vt in db.VaiTro on nd.MaVaiTro equals vt.MaVaiTro
                       where tk.Email == email
                       select new ProfileUserModel
                       {
@@ -186,8 +186,8 @@ namespace CuaHangThietBiDienTu.Controllers
                 ViewBag.ErrorMessage = "Vui lòng nhập đầy đủ email và mật khẩu.";
                 return View();
             }
-            var user = (from tk in db.TaiKhoans
-                        join nd in db.NguoiDungs on tk.MaNguoiDung equals nd.MaNguoiDung
+            var user = (from tk in db.TaiKhoan
+                        join nd in db.NguoiDung on tk.MaNguoiDung equals nd.MaNguoiDung
                         where tk.Email == email && tk.MatKhau == password
                         select new
                         {
@@ -231,14 +231,14 @@ namespace CuaHangThietBiDienTu.Controllers
         {
             if (ModelState.IsValid)
             {
-                var existingEmail = db.TaiKhoans.FirstOrDefault(x => x.Email == kh.Email);
+                var existingEmail = db.TaiKhoan.FirstOrDefault(x => x.Email == kh.Email);
                 if (existingEmail != null)
                 {
                     ViewBag.ErrorMessage = "Email này đã được sử dụng. Vui lòng dùng email khác!";
                     return View(kh);
                 }
 
-                db.TaiKhoans.Add(kh);
+                db.TaiKhoan.Add(kh);
                 db.SaveChanges();
 
                 return RedirectToAction("Login");

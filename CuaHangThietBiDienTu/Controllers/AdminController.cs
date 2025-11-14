@@ -10,15 +10,15 @@ namespace CuaHangThietBiDienTu.Controllers
     public class AdminController : Controller
     {
         // GET: Admin
-        private QL_WEB_THIETBIDIENTUEntities db = new QL_WEB_THIETBIDIENTUEntities();
+        private QL_THIETBIDIENTUEntities db = new QL_THIETBIDIENTUEntities();
         [HttpGet]
         
 
         public ActionResult AdminPage()
         {
-            int tongKhachHang = db.NguoiDungs.Where(x => x.MaVaiTro == 3).Count();
+            int tongKhachHang = db.NguoiDung.Where(x => x.MaVaiTro == 3).Count();
 
-            decimal tongDoanhThu = db.DonHangs.Sum(d => (decimal?)d.TongTien) ?? 0;
+            decimal tongDoanhThu = db.DonHang.Sum(d => (decimal?)d.TongTien) ?? 0;
 
             ViewBag.TongKhachHang = tongKhachHang;
             ViewBag.TongDoanhThu = tongDoanhThu;

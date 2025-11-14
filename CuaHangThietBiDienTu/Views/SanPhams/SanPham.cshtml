@@ -1,27 +1,376 @@
 ﻿@model IEnumerable<CuaHangThietBiDienTu.Models.SanPham>
+@using System.Globalization
 
 @{
-    ViewBag.Title = "SanPham";
+    ViewBag.Title = "Sản Phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2 class="mb-5 text-center">Sản phẩm nổi bật</h2>
 
-<div class="row ">
-    @foreach (var sp in Model)
+@functions {
+    public string FormatCurrency(decimal? value)
     {
-        <div class="col-md-4 mb-3">
-            <div class="card text-center h-100 rounded-4 shadow-sm">
-                <div class="p-3">
-                    <img src="~/Content/Images/ProductImg/@sp.HinhAnh" class="rounded-4" style="width: 100%; max-height: 250px; object-fit:cover;" alt="...">
-
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">@sp.TenSP</h5>
-                    <p class="card-text text-danger fw-bold">@sp.GiaBan.Value.ToString("N0")</p>
-                    <a href="@Url.Action("ChiTietSP", "SanPhams", new {maSP = sp.MaSP})" class="btn btn-primary">Xem chi tiết</a>
-                </div>
-            </div>
-        </div>
-
+        if (value == null) return "0";
+        return value.Value.ToString("N0", new CultureInfo("vi-VN"));
     }
+
+    public string FormatPercent(decimal? value)
+    {
+        if (value == null) return "0";
+        return value.Value.ToString("N0");
+    }
+
+    public decimal CalculateDiscountPrice(decimal? price, decimal? discount)
+    {
+        if (price == null || discount == null) return 0;
+        return price.Value * (100 - discount.Value) / 100;
+    }
+
+    public string TruncateDescription(string description, int length)
+    {
+        if (string.IsNullOrEmpty(description)) return "";
+        return description.Length <= length ? description : description.Substring(0, length) + "...";
+    }
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-lg-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="text-dark">
+                    <i class="fas fa-boxes me-2"></i>
+                    @(ViewBag.TieuDe ?? "TẤT CẢ SẢN PHẨM")
+                </h2>
+                <span class="badge bg-primary fs-6">@Model.Count() sản phẩm</span>
+            </div>
+
+            <!-- Product Grid với responsive tự động -->
+            <div class="row g-3" id="productGrid">
+                @foreach (var item in Model)
+                {
+                    <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4 product-item">
+                        <div class="card h-100 shadow-sm product-card">
+                            <div class="position-relative">
+                                <!-- Container ảnh tự động resize -->
+                                <div class="image-container">
+                                    <img src="@Url.Content("~/Content/Images/ProductImg/" + item.HinhAnh)"
+                                         class="card-img-top product-image"
+                                         alt="@item.TenSP"
+                                         loading="lazy">
+                                </div>
+                                @if (item.GiamGia > 0)
+                                {
+                                    <span class="position-absolute top-0 start-0 badge bg-danger m-2">
+                                        -@FormatPercent(item.GiamGia)%
+                                    </span>
+                                }
+                                <span class="position-absolute top-0 end-0 badge @(item.SoLuongTon > 0 ? "bg-success" : "bg-danger") m-2">
+                                    @item.SoLuongTon
+                                </span>
+                            </div>
+
+                            <div class="card-body d-flex flex-column">
+                                <!-- Tiêu đề tự động căn chỉnh chiều cao -->
+                                <h6 class="card-title product-title">@item.TenSP</h6>
+
+                                <!-- Mô tả tự động căn chỉnh -->
+                                <p class="card-text small text-muted product-description">
+                                    @TruncateDescription(item.MoTa, 80)
+                                </p>
+
+                                <div class="mt-auto">
+                                    <!-- Giá sản phẩm -->
+                                    <div class="price-section mb-2">
+                                        @if (item.GiamGia > 0)
+                                        {
+                                            <div>
+                                                <strong class="text-danger h6">@FormatCurrency(CalculateDiscountPrice(item.GiaBan, item.GiamGia)) ₫</strong>
+                                                <br>
+                                                <small class="text-muted text-decoration-line-through">@FormatCurrency(item.GiaBan) ₫</small>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <strong class="text-primary h6">@FormatCurrency(item.GiaBan) ₫</strong>
+                                        }
+                                    </div>
+
+                                    <!-- Nút hành động -->
+                                    <div class="action-buttons d-grid gap-2">
+                                        <a href="@Url.Action("Details", new { id = item.MaSP })"
+                                           class="btn btn-outline-primary btn-sm">
+                                            <i class="fas fa-eye me-1"></i> Chi tiết
+                                        </a>
+                                        @if (item.SoLuongTon > 0)
+                                        {
+                                            <button class="btn btn-primary btn-sm add-to-cart" data-id="@item.MaSP">
+                                                <i class="fas fa-cart-plus me-1"></i> Thêm giỏ hàng
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-secondary btn-sm" disabled>
+                                                <i class="fas fa-times me-1"></i> Hết hàng
+                                            </button>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- No products message -->
+            @if (!Model.Any())
+            {
+                <div class="text-center py-5">
+                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                    <h4 class="text-muted">Không tìm thấy sản phẩm nào</h4>
+                    <p class="text-muted">Hãy thử điều chỉnh bộ lọc hoặc tìm kiếm với từ khóa khác</p>
+                    <a href="@Url.Action("SanPham")" class="btn btn-primary mt-3">
+                        <i class="fas fa-refresh me-1"></i> Xem tất cả sản phẩm
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
 </div>
+
+<style>
+    /* Container chính cho sản phẩm */
+    .product-item {
+        transition: all 0.3s ease;
+    }
+
+    /* Card sản phẩm */
+    .product-card {
+        transition: all 0.3s ease;
+        border: 1px solid #dee2e6;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+    /* Container ảnh - Tự động resize */
+    .image-container {
+        height: 200px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f8f9fa;
+        padding: 15px;
+        flex-shrink: 0;
+    }
+
+    /* Ảnh sản phẩm - Tự động fit */
+    .product-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        transition: transform 0.3s ease;
+    }
+
+    .product-card:hover .product-image {
+        transform: scale(1.05);
+    }
+
+    /* Tiêu đề sản phẩm - Tự động căn chiều cao */
+    .product-title {
+        height: 3em;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        line-height: 1.5em;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Mô tả sản phẩm - Tự động căn chiều cao */
+    .product-description {
+        height: 4.5em;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        line-height: 1.5em;
+        flex-grow: 1;
+    }
+
+    /* Phần giá */
+    .price-section {
+        min-height: 50px;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Nút hành động */
+    .action-buttons {
+        margin-top: auto;
+    }
+
+    /* Responsive breakpoints */
+    @@media (max-width: 1400px) {
+        .image-container {
+            height: 180px;
+            padding: 12px;
+        }
+
+        .product-title {
+            height: 2.5em;
+            font-size: 0.9rem;
+        }
+
+        .product-description {
+            height: 4em;
+            font-size: 0.8rem;
+        }
+    }
+
+    @@media (max-width: 1200px) {
+        .image-container {
+            height: 160px;
+            padding: 10px;
+        }
+
+        .product-title {
+            height: 2.2em;
+            font-size: 0.85rem;
+        }
+    }
+
+    @@media (max-width: 992px) {
+        .image-container {
+            height: 140px;
+        }
+
+        .product-title {
+            height: 2em;
+        }
+
+        .product-description {
+            height: 3.5em;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .image-container {
+            height: 120px;
+            padding: 8px;
+        }
+
+        .product-title {
+            height: 1.8em;
+            font-size: 0.8rem;
+        }
+
+        .product-description {
+            height: 3em;
+            font-size: 0.75rem;
+        }
+
+        .price-section .h6 {
+            font-size: 0.9rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .image-container {
+            height: 100px;
+        }
+
+        .product-title {
+            height: 1.5em;
+            font-size: 0.75rem;
+        }
+
+        .action-buttons .btn {
+            font-size: 0.7rem;
+            padding: 0.25rem 0.5rem;
+        }
+    }
+
+    /* Grid system responsive */
+    .col-xxl-2 {
+        flex: 0 0 auto;
+        width: 20%;
+    }
+
+    @@media (max-width: 1400px) {
+        .col-xxl-2 {
+            width: 25%;
+        }
+    }
+
+    @@media (max-width: 1200px) {
+        .col-xxl-2 {
+            width: 33.333%;
+        }
+    }
+
+    @@media (max-width: 992px) {
+        .col-xxl-2 {
+            width: 50%;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .col-xxl-2 {
+            width: 100%;
+        }
+    }
+</style>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            // Thêm vào giỏ hàng
+            $('.add-to-cart').click(function () {
+                var productId = $(this).data('id');
+                $.ajax({
+                    url: '@Url.Action("AddToCart", "Cart")',
+                    type: 'POST',
+                    data: { productId: productId, quantity: 1 },
+                    success: function(response) {
+                        if (response.success) {
+                            alert('Đã thêm sản phẩm vào giỏ hàng!');
+                            $('.cart-count').text(response.cartCount);
+                        } else {
+                            alert('Có lỗi xảy ra: ' + response.message);
+                        }
+                    },
+                    error: function() {
+                        alert('Có lỗi xảy ra khi thêm vào giỏ hàng!');
+                    }
+                });
+            });
+
+            // Tự động resize ảnh dựa trên container
+            function resizeProductImages() {
+                $('.image-container').each(function() {
+                    var container = $(this);
+                    var img = container.find('.product-image');
+
+                    // Đảm bảo ảnh luôn fit container
+                    img.css({
+                        'max-width': '100%',
+                        'max-height': '100%',
+                        'object-fit': 'contain'
+                    });
+                });
+            }
+
+            // Gọi hàm resize khi trang load và khi resize window
+            resizeProductImages();
+            $(window).on('resize', resizeProductImages);
+        });
+    </script>
+}

@@ -1,89 +1,253 @@
 ﻿@model CuaHangThietBiDienTu.Models.SanPham
+@using System.Globalization
 
 @{
-    Layout = "~/Views/Shared/AdminLayout.cshtml";
-
+    ViewBag.Title = "Chi Tiết Sản Phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Details</h2>
+@functions {
+    public string FormatCurrency(decimal? value)
+    {
+        if (value == null) return "0";
+        return value.Value.ToString("N0", new CultureInfo("vi-VN"));
+    }
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>SanPham</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.TenSP)
-        </dt>
+    public string FormatPercent(decimal? value)
+    {
+        if (value == null) return "0";
+        return value.Value.ToString("N0");
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.TenSP)
-        </dd>
+    public decimal CalculateDiscountPrice(decimal? price, decimal? discount)
+    {
+        if (price == null || discount == null) return 0;
+        return price.Value * (100 - discount.Value) / 100;
+    }
+}
 
-        <dt>
-            @Html.DisplayNameFor(model => model.GiaBan)
-        </dt>
+<div class="container">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="@Url.Action("TrangChu")">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a href="@Url.Action("SanPham")">Sản phẩm</a></li>
+            <li class="breadcrumb-item active">@Model.TenSP</li>
+        </ol>
+    </nav>
 
-        <dd>
-            @Html.DisplayFor(model => model.GiaBan)
-        </dd>
+    <div class="row">
+        <!-- Product Images -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <img src="@Url.Content("~/Content/Images/ProductImg/" + Model.HinhAnh)"
+                         class="img-fluid rounded"
+                         alt="@Model.TenSP"
+                         style="max-height: 400px; object-fit: contain;">
+                </div>
+            </div>
+        </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.MoTa)
-        </dt>
+        <!-- Product Info -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title text-primary">@Model.TenSP</h2>
 
-        <dd>
-            @Html.DisplayFor(model => model.MoTa)
-        </dd>
+                    <!-- Price -->
+                    <div class="mb-3">
+                        @if (Model.GiamGia > 0)
+                        {
+                            <div class="d-flex align-items-center">
+                                <h3 class="text-danger me-3">@FormatCurrency(CalculateDiscountPrice(Model.GiaBan, Model.GiamGia)) ₫</h3>
+                                <span class="text-muted text-decoration-line-through h5">@FormatCurrency(Model.GiaBan) ₫</span>
+                                <span class="badge bg-danger ms-2 fs-6">-@FormatPercent(Model.GiamGia)%</span>
+                            </div>
+                        }
+                        else
+                        {
+                            <h3 class="text-primary">@FormatCurrency(Model.GiaBan) ₫</h3>
+                        }
+                    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.NgayCapNhat)
-        </dt>
+                    <!-- Stock Status -->
+                    <div class="mb-3">
+                        <span class="badge @(Model.SoLuongTon > 0 ? "bg-success" : "bg-danger") fs-6">
+                            @(Model.SoLuongTon > 0 ? "Còn hàng" : "Hết hàng")
+                        </span>
+                        <span class="text-muted ms-2">@Model.SoLuongTon sản phẩm có sẵn</span>
+                    </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.NgayCapNhat)
-        </dd>
+                    <!-- Description -->
+                    <div class="mb-4">
+                        <h5>Mô tả sản phẩm</h5>
+                        <p class="text-muted">@Model.MoTa</p>
+                    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.HinhAnh)
-        </dt>
+                    <!-- Product Details -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <strong><i class="fas fa-tag me-2 text-primary"></i>Loại:</strong>
+                            <span class="text-muted">@Model.LoaiSanPham.TenLoai</span>
+                        </div>
+                        <div class="col-md-6">
+                            <strong><i class="fas fa-truck me-2 text-primary"></i>Nhà cung cấp:</strong>
+                            <span class="text-muted">@Model.NhaCungCap.TenNCC</span>
+                        </div>
+                    </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.HinhAnh)
-        </dd>
+                    <!-- Action Buttons -->
+                    <div class="d-grid gap-2 d-md-flex">
+                        @if (Model.SoLuongTon > 0)
+                        {
+                            <button class="btn btn-primary btn-lg flex-fill me-md-2 add-to-cart" data-id="@Model.MaSP">
+                                <i class="fas fa-cart-plus me-2"></i>Thêm vào giỏ hàng
+                            </button>
+                            <button class="btn btn-outline-success btn-lg flex-fill buy-now" data-id="@Model.MaSP">
+                                <i class="fas fa-bolt me-2"></i>Mua ngay
+                            </button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-secondary btn-lg flex-fill" disabled>
+                                <i class="fas fa-times me-2"></i>Hết hàng
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.SoLuongTon)
-        </dt>
+    <!-- Related Products -->
+    @if (ViewBag.SanPhamCungLoai != null)
+    {
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="mb-4">Sản phẩm cùng loại</h3>
+                <div class="row">
+                    @foreach (var item in ViewBag.SanPhamCungLoai)
+                    {
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <img src="@Url.Content("~/Content/Images/ProductImg/" + item.HinhAnh)"
+                                     class="card-img-top"
+                                     alt="@item.TenSP"
+                                     style="height: 150px; object-fit: cover;">
+                                <div class="card-body">
+                                    <h6 class="card-title">@item.TenSP</h6>
+                                    <div class="text-primary fw-bold">@FormatCurrency(item.GiaBan) ₫</div>
+                                    <a href="@Url.Action("Details", new { id = item.MaSP })"
+                                       class="btn btn-outline-primary btn-sm w-100 mt-2">
+                                        Xem chi tiết
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.SoLuongTon)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.LoaiSanPham.TenLoai)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.LoaiSanPham.TenLoai)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.NhaCungCap.TenNCC)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.NhaCungCap.TenNCC)
-        </dd>
-
-    </dl>
-
-    @using (Html.BeginForm()) {
-        @Html.AntiForgeryToken()
-
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+    <!-- Reviews Section -->
+    @if (Model.DanhGia != null && Model.DanhGia.Any())
+    {
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="mb-4">Đánh giá sản phẩm</h3>
+                <div class="card">
+                    <div class="card-body">
+                        @foreach (var review in Model.DanhGia)
+                        {
+                            <div class="border-bottom pb-3 mb-3">
+                                <div class="d-flex justify-content-between">
+                                    <strong>@review.NguoiDung?.HoTen</strong>
+                                    <div>
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            <i class="fas fa-star @(i <= review.SoSao ? "text-warning" : "text-muted")"></i>
+                                        }
+                                    </div>
+                                </div>
+                                <p class="text-muted mb-1">@review.NgayDanhGia?.ToString("dd/MM/yyyy")</p>
+                                <p class="mb-0">@review.NoiDung</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
         </div>
     }
 </div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $('.add-to-cart').click(function () {
+                var productId = $(this).data('id');
+                addToCart(productId, 1);
+            });
+
+            $('.buy-now').click(function () {
+                var productId = $(this).data('id');
+                addToCart(productId, 1, true);
+            });
+
+            function addToCart(productId, quantity, redirectToCart = false) {
+                $.ajax({
+                    url: '@Url.Action("AddToCart", "Cart")',
+                    type: 'POST',
+                    data: {
+                        productId: productId,
+                        quantity: quantity
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            if (redirectToCart) {
+                                window.location.href = '@Url.Action("Index", "Cart")';
+                            } else {
+                                // Hiển thị thông báo đẹp hơn thay vì alert
+                                showToast('success', 'Thành công', 'Đã thêm sản phẩm vào giỏ hàng!');
+                                // Cập nhật số lượng giỏ hàng
+                                $('.cart-count').text(response.cartCount);
+                            }
+                        } else {
+                            showToast('error', 'Lỗi', response.message);
+                        }
+                    },
+                    error: function () {
+                        showToast('error', 'Lỗi', 'Có lỗi xảy ra khi thêm vào giỏ hàng!');
+                    }
+                });
+            }
+
+            function showToast(type, title, message) {
+                // Tạo toast notification đẹp
+                const toast = $(`
+                    <div class="toast align-items-center text-white bg-${type} border-0" role="alert">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                <strong>${title}:</strong> ${message}
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                        </div>
+                    </div>
+                `);
+
+                $('#toast-container').append(toast);
+                const bsToast = new bootstrap.Toast(toast);
+                bsToast.show();
+
+                // Tự động xóa toast sau khi ẩn
+                toast.on('hidden.bs.toast', function () {
+                    $(this).remove();
+                });
+            }
+        });
+    </script>
+}
+
+<!-- Thêm container cho toast notifications -->
+<div id="toast-container" class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;"></div>

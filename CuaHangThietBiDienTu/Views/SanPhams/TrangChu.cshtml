@@ -1,7 +1,231 @@
-﻿
+﻿@model IEnumerable<CuaHangThietBiDienTu.Models.SanPham>
+@using System.Globalization
+
 @{
-    ViewBag.Title = "TrangChu";
+    ViewBag.Title = "Trang Chủ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>TrangChu</h2>
+@functions {
+    public string FormatCurrency(decimal? value)
+    {
+        if (value == null) return "0";
+        return value.Value.ToString("N0", new CultureInfo("vi-VN"));
+    }
 
+    public string FormatPercent(decimal? value)
+    {
+        if (value == null) return "0";
+        return value.Value.ToString("N0");
+    }
+
+    public decimal CalculateDiscountPrice(decimal? price, decimal? discount)
+    {
+        if (price == null || discount == null) return 0;
+        return price.Value * (100 - discount.Value) / 100;
+    }
+
+    public string TruncateDescription(string description, int length)
+    {
+        if (string.IsNullOrEmpty(description)) return "";
+        return description.Length <= length ? description : description.Substring(0, length) + "...";
+    }
+}
+
+<!-- Banner -->
+<div class="banner-section position-relative py-5 mb-4" style="background: linear-gradient(rgba(0, 0, 139, 0.7), rgba(0, 0, 139, 0.7)), url('@Url.Content("~/Content/img/banner.jpg")') center/cover no-repeat; min-height: 400px;">
+    <div class="container position-relative" style="z-index: 2;">
+        <div class="row align-items-center min-vh-60">
+            <div class="col-md-6">
+                <h1 class="display-4 fw-bold text-white">THIẾT BỊ ĐIỆN TỬ</h1>
+                <p class="lead text-white mb-4">Khám phá thế giới công nghệ với những sản phẩm chất lượng nhất</p>
+                <a href="@Url.Action("SanPham")" class="btn btn-light btn-lg mt-3">
+                    <i class="fas fa-shopping-bag me-2"></i> MUA SẮM NGAY
+                </a>
+            </div>
+            <div class="col-md-6 text-center">
+                <!-- Có thể thêm ảnh sản phẩm nổi bật hoặc giữ icon -->
+                <div class="banner-image">
+                    <img src="@Url.Content("~/Content/img/iphone15.jpg")"
+                         alt="Sản phẩm nổi bật"
+                         class="img-fluid rounded shadow"
+                         style="max-height: 250px;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hiệu ứng overlay -->
+    <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(45deg, rgba(13, 110, 253, 0.1), rgba(255, 255, 255, 0.05)); z-index: 1;"></div>
+</div>
+
+<style>
+    .banner-section {
+        background-attachment: fixed; /* Hiệu ứng parallax */
+    }
+
+    .min-vh-60 {
+        min-height: 60vh;
+    }
+
+    .banner-image {
+        animation: float 3s ease-in-out infinite;
+    }
+
+    @@keyframes float {
+        0%, 100% {
+            transform: translateY(0px);
+        }
+
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .banner-section {
+            min-height: 300px;
+            background-attachment: scroll; /* Bỏ parallax trên mobile */
+        }
+
+        .display-4 {
+            font-size: 2.5rem;
+        }
+
+        .banner-image img {
+            max-height: 150px;
+            margin-top: 20px;
+        }
+    }
+</style>
+
+<div class="container">
+    <!-- Sản phẩm nổi bật -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="text-dark"><i class="fas fa-star me-2 text-warning"></i>SẢN PHẨM MỚI NHẤT</h2>
+                <a href="@Url.Action("SanPham")" class="btn btn-outline-primary">Xem tất cả</a>
+            </div>
+        </div>
+
+        @foreach (var item in Model)
+        {
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="card h-100 shadow-sm product-card">
+                    <div class="position-relative">
+                        <img src="@Url.Content("~/Content/Images/ProductImg/" + item.HinhAnh)"
+                             class="card-img-top"
+                             alt="@item.TenSP"
+                             style="height: 200px; object-fit: cover;">
+                        @if (item.GiamGia > 0)
+                        {
+                            <span class="position-absolute top-0 start-0 badge bg-danger m-2">
+                                -@FormatPercent(item.GiamGia)%
+                            </span>
+                        }
+                        <span class="position-absolute top-0 end-0 badge @(item.SoLuongTon > 0 ? "bg-success" : "bg-danger") m-2">
+                            @item.SoLuongTon SP
+                        </span>
+                    </div>
+
+                    <div class="card-body d-flex flex-column">
+                        <h6 class="card-title text-truncate">@item.TenSP</h6>
+                        <p class="card-text small text-muted flex-grow-1">
+                            @TruncateDescription(item.MoTa, 60)
+                        </p>
+
+                        <div class="mt-auto">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                @if (item.GiamGia > 0)
+                                {
+                                    <div>
+                                        <strong class="text-danger h5">@FormatCurrency(CalculateDiscountPrice(item.GiaBan, item.GiamGia)) ₫</strong>
+                                        <br>
+                                        <small class="text-muted text-decoration-line-through">@FormatCurrency(item.GiaBan) ₫</small>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <strong class="text-primary h5">@FormatCurrency(item.GiaBan) ₫</strong>
+                                }
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <a href="@Url.Action("Details", new { id = item.MaSP })"
+                                   class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-eye me-1"></i> Chi tiết
+                                </a>
+                                @if (item.SoLuongTon > 0)
+                                {
+                                    <button class="btn btn-primary btn-sm add-to-cart" data-id="@item.MaSP">
+                                        <i class="fas fa-cart-plus me-1"></i> Thêm giỏ hàng
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-secondary btn-sm" disabled>
+                                        <i class="fas fa-times me-1"></i> Hết hàng
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Sản phẩm giảm giá -->
+    @if (ViewBag.SanPhamGiamGia != null)
+    {
+        <div class="row">
+            <div class="col-12">
+                <h2 class="text-dark mb-4"><i class="fas fa-fire me-2 text-danger"></i>SẢN PHẨM GIẢM GIÁ</h2>
+            </div>
+
+            @foreach (var item in ViewBag.SanPhamGiamGia)
+            {
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="card h-100 shadow border-danger">
+                        <div class="card-header bg-danger text-white text-center">
+                            <strong>GIẢM @FormatPercent(item.GiamGia)%</strong>
+                        </div>
+                        <div class="card-body text-center">
+                            <img src="@Url.Content("~/Content/Images/ProductImg/" + item.HinhAnh)"
+                                 class="img-fluid mb-3"
+                                 alt="@item.TenSP"
+                                 style="height: 120px; object-fit: cover;">
+                            <h6>@item.TenSP</h6>
+                            <div class="text-success h5">@FormatCurrency(CalculateDiscountPrice(item.GiaBan, item.GiamGia)) ₫</div>
+                            <small class="text-muted text-decoration-line-through">@FormatCurrency(item.GiaBan) ₫</small>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<style>
+    .product-card {
+        transition: transform 0.3s ease;
+    }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+</style>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $('.add-to-cart').click(function () {
+                var productId = $(this).data('id');
+                // Thêm vào giỏ hàng logic
+                alert('Đã thêm sản phẩm vào giỏ hàng!');
+            });
+        });
+    </script>
+}

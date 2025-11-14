@@ -1,8 +1,0 @@
-﻿@model IEnumerable<CuaHangThietBiDienTu.Models.NhaCungCap>
-@foreach (var sp in Model)
-{
-    <a href="@Url.Action("TimTheoNCC", "SanPhams", new {mancc = sp.MaNCC})" class="@(Request["mancc"] == sp.MaNCC.ToString()?"active": "submenu-item d-block px-2 py-1 rounded")">
-        @sp.TenNCC
-    </a>
-}
-

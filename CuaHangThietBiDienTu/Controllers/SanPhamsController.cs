@@ -7,202 +7,303 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using CuaHangThietBiDienTu.Models;
+using EntityState = System.Data.Entity.EntityState;
 
 namespace CuaHangThietBiDienTu.Controllers
 {
     public class SanPhamsController : Controller
     {
-        private QL_WEB_THIETBIDIENTUEntities db = new QL_WEB_THIETBIDIENTUEntities();
+        private QL_THIETBIDIENTUEntities db = new QL_THIETBIDIENTUEntities();
 
-        // GET: SanPhams
-
-        public ActionResult ChiTietSP(int? maSP)
+        public ActionResult Index()
         {
-            var sanpham = db.SanPhams.FirstOrDefault(sp => sp.MaSP == maSP);
-            var splq = db.SanPhams.Where(sp => sp.MaLoai == maSP && sp.MaSP != maSP).ToList();
-            ViewBag.SPLQ = splq;
-
-            var cmt = db.DanhGias.Where(c => c.MaSP == maSP).OrderByDescending(c =>c.NgayDanhGia).ToList(); 
-            ViewBag.Cmt = cmt;  
-            return View(sanpham);
-
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Comment(int maSP, string noidung, int rate)
-        {
-            if (Session["UserID"] == null)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-            int manguoidung = (int)Session["UserID"];
-            if(string.IsNullOrEmpty(noidung) || rate < 1 || rate > 5)
-            {
-                TempData["Error"] = "Vui lòng nhập nội dung và chọn đánh giá hợp lệ.";
-                return RedirectToAction("ChiTietSP", new { maSP });
-            }
-            var danhgia = new DanhGia
-            {
-                MaSP = maSP,
-                MaKH = manguoidung,
-                NoiDung = noidung,
-                Rate = rate,
-                NgayDanhGia = DateTime.Now,
-
-            };
-            db.DanhGias.Add(danhgia);
-            db.SaveChanges();
-            return RedirectToAction("ChiTietSP", new { maSP });
-        }
-        public ActionResult TheoNCC()
-        {
-            List<NhaCungCap> lstNCC = db.NhaCungCaps.ToList();
-            return PartialView(lstNCC);
-        }
-        public ActionResult TimTheoNCC(int? mancc)
-        {
-            var sanphams = db.SanPhams.Where(x => x.MaNCC == mancc).ToList();
-            return View("SanPham", sanphams);
+            var sanPhams = db.SanPham
+                .Include(s => s.LoaiSanPham)
+                .Include(s => s.NhaCungCap)
+                .OrderByDescending(s => s.NgayCapNhat)
+                .ToList();
+            return View(sanPhams);
         }
 
         public ActionResult TheoLoaiSP()
         {
-            List<LoaiSanPham> lstLoaiSP = db.LoaiSanPhams.ToList();
-            return PartialView(lstLoaiSP);
+            var lstLoaiSP = db.LoaiSanPham.ToList();
+            ViewBag.TongSoSanPham = db.SanPham.Count();
+            return PartialView("_MenuLoaiSanPham", lstLoaiSP);
         }
+
+        public ActionResult TheoNCC()
+        {
+            var lstNCC = db.NhaCungCap.ToList();
+            return PartialView("_MenuNhaCungCap", lstNCC);
+        }
+
+        // GET: Tìm sản phẩm theo nhà cung cấp
+        public ActionResult TimTheoNCC(int? mancc)
+        {
+            if (mancc == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            var sanphams = db.SanPham
+                .Where(x => x.MaNCC == mancc)
+                .Include(s => s.LoaiSanPham)
+                .Include(s => s.NhaCungCap)
+                .ToList();
+
+            ViewBag.TieuDe = $"Sản phẩm theo nhà cung cấp: {db.NhaCungCap.Find(mancc)?.TenNCC}";
+            return View("SanPham", sanphams);
+        }
+
+        // GET: Tìm sản phẩm theo loại
         public ActionResult TimTheoLoaiSP(int? maLoai)
         {
-            var sanPhams = db.SanPhams.Where(s => s.MaLoai == maLoai).ToList();
+            if (maLoai == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            var sanPhams = db.SanPham
+                .Where(s => s.MaLoai == maLoai)
+                .Include(s => s.LoaiSanPham)
+                .Include(s => s.NhaCungCap)
+                .ToList();
+
+            ViewBag.TieuDe = $"Sản phẩm theo loại: {db.LoaiSanPham.Find(maLoai)?.TenLoai}";
             return View("SanPham", sanPhams);
         }
+
+        // GET: Trang chủ - hiển thị sản phẩm mới nhất
         public ActionResult TrangChu()
         {
-            return View();
+            var spMoiNhat = db.SanPham
+                .Include(s => s.LoaiSanPham)
+                .Include(s => s.NhaCungCap)
+                .OrderByDescending(s => s.NgayCapNhat)
+                .Take(8) // Hiển thị 8 sản phẩm mới nhất
+                .ToList();
+
+            ViewBag.SanPhamGiamGia = db.SanPham
+                .Where(s => s.GiamGia > 0)
+                .OrderByDescending(s => s.GiamGia)
+                .Take(4)
+                .ToList();
+
+            return View(spMoiNhat);
         }
 
-        public ActionResult SanPham()
+        // GET: Trang danh sách sản phẩm
+        public ActionResult SanPham(string searchString, int? maLoai, int? maNCC, decimal? minPrice, decimal? maxPrice)
         {
-            var sanPhams = db.SanPhams.Include(s => s.LoaiSanPham).Include(s => s.NhaCungCap);
+            var sanPhams = db.SanPham
+                .Include(s => s.LoaiSanPham)
+                .Include(s => s.NhaCungCap)
+                .AsQueryable();
+
+            // Tìm kiếm theo tên sản phẩm
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                sanPhams = sanPhams.Where(s => s.TenSP.Contains(searchString));
+            }
+
+            // Lọc theo loại sản phẩm
+            if (maLoai.HasValue)
+            {
+                sanPhams = sanPhams.Where(s => s.MaLoai == maLoai);
+            }
+
+            // Lọc theo nhà cung cấp
+            if (maNCC.HasValue)
+            {
+                sanPhams = sanPhams.Where(s => s.MaNCC == maNCC);
+            }
+
+            // Lọc theo khoảng giá
+            if (minPrice.HasValue)
+            {
+                sanPhams = sanPhams.Where(s => s.GiaBan >= minPrice);
+            }
+
+            if (maxPrice.HasValue)
+            {
+                sanPhams = sanPhams.Where(s => s.GiaBan <= maxPrice);
+            }
+
+            // Sắp xếp
+            sanPhams = sanPhams.OrderByDescending(s => s.NgayCapNhat);
+
+            ViewBag.SearchString = searchString;
+            ViewBag.MaLoai = new SelectList(db.LoaiSanPham, "MaLoai", "TenLoai", maLoai);
+            ViewBag.MaNCC = new SelectList(db.NhaCungCap, "MaNCC", "TenNCC", maNCC);
+
             return View(sanPhams.ToList());
         }
 
-        // GET: SanPhams
-        public ActionResult DSSanPham()
-        {
-            var sanPhams = db.SanPhams.Include(s => s.LoaiSanPham).Include(s => s.NhaCungCap);
-            return View(sanPhams.ToList());
-        }
-
-        // GET: SanPhams/Details/5
+        // GET: Chi tiết sản phẩm
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SanPham sanPham = db.SanPhams.Find(id);
+
+            SanPham sanPham = db.SanPham
+                .Include(s => s.LoaiSanPham)
+                .Include(s => s.NhaCungCap)
+                .Include(s => s.DanhGia)
+                .Include(s => s.DanhGia.Select(d => d.NguoiDung))
+                .FirstOrDefault(s => s.MaSP == id);
+
             if (sanPham == null)
             {
                 return HttpNotFound();
             }
+
+            // Lấy sản phẩm cùng loại
+            ViewBag.SanPhamCungLoai = db.SanPham
+                .Where(s => s.MaLoai == sanPham.MaLoai && s.MaSP != id)
+                .Take(4)
+                .ToList();
+
             return View(sanPham);
         }
-        public ActionResult Index()
-        {
-            var sanPhams = db.SanPhams.Include(s => s.LoaiSanPham).Include(s => s.NhaCungCap);
-            return View(sanPhams.ToList());
-        }
 
-        // GET: SanPhams/Details/5
-        
-
-        // GET: SanPhams/Create
+        // GET: Tạo sản phẩm mới (Admin)
+        [Authorize(Roles = "Admin,NhanVien")]
         public ActionResult Create()
         {
-            ViewBag.MaLoai = new SelectList(db.LoaiSanPhams, "MaLoai", "TenLoai");
-            ViewBag.MaNCC = new SelectList(db.NhaCungCaps, "MaNCC", "TenNCC");
+            ViewBag.MaLoai = new SelectList(db.LoaiSanPham, "MaLoai", "TenLoai");
+            ViewBag.MaNCC = new SelectList(db.NhaCungCap, "MaNCC", "TenNCC");
             return View();
         }
 
-        // POST: SanPhams/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Tạo sản phẩm mới
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "MaSP,TenSP,GiaBan,MoTa,NgayCapNhat,HinhAnh,SoLuongTon,MaLoai,MaNCC")] SanPham sanPham)
+        [Authorize(Roles = "Admin,NhanVien")]
+        public ActionResult Create([Bind(Include = "MaSP,TenSP,GiaBan,GiamGia,MoTa,NgayCapNhat,HinhAnh,SoLuongTon,MaLoai,MaNCC")] SanPham sanPham)
         {
             if (ModelState.IsValid)
             {
-                db.SanPhams.Add(sanPham);
+                sanPham.NgayCapNhat = DateTime.Now;
+                db.SanPham.Add(sanPham);
                 db.SaveChanges();
+                TempData["SuccessMessage"] = "Thêm sản phẩm thành công!";
                 return RedirectToAction("Index");
             }
 
-            ViewBag.MaLoai = new SelectList(db.LoaiSanPhams, "MaLoai", "TenLoai", sanPham.MaLoai);
-            ViewBag.MaNCC = new SelectList(db.NhaCungCaps, "MaNCC", "TenNCC", sanPham.MaNCC);
+            ViewBag.MaLoai = new SelectList(db.LoaiSanPham, "MaLoai", "TenLoai", sanPham.MaLoai);
+            ViewBag.MaNCC = new SelectList(db.NhaCungCap, "MaNCC", "TenNCC", sanPham.MaNCC);
             return View(sanPham);
         }
 
-        // GET: SanPhams/Edit/5
+        // GET: Sửa sản phẩm
+        [Authorize(Roles = "Admin,NhanVien")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SanPham sanPham = db.SanPhams.Find(id);
+
+            SanPham sanPham = db.SanPham.Find(id);
             if (sanPham == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.MaLoai = new SelectList(db.LoaiSanPhams, "MaLoai", "TenLoai", sanPham.MaLoai);
-            ViewBag.MaNCC = new SelectList(db.NhaCungCaps, "MaNCC", "TenNCC", sanPham.MaNCC);
+
+            ViewBag.MaLoai = new SelectList(db.LoaiSanPham, "MaLoai", "TenLoai", sanPham.MaLoai);
+            ViewBag.MaNCC = new SelectList(db.NhaCungCap, "MaNCC", "TenNCC", sanPham.MaNCC);
             return View(sanPham);
         }
 
-        // POST: SanPhams/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Sửa sản phẩm
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "MaSP,TenSP,GiaBan,MoTa,NgayCapNhat,HinhAnh,SoLuongTon,MaLoai,MaNCC")] SanPham sanPham)
+        [Authorize(Roles = "Admin,NhanVien")]
+        public ActionResult Edit([Bind(Include = "MaSP,TenSP,GiaBan,GiamGia,MoTa,NgayCapNhat,HinhAnh,SoLuongTon,MaLoai,MaNCC")] SanPham sanPham)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(sanPham).State = System.Data.Entity.EntityState.Modified;
+                sanPham.NgayCapNhat = DateTime.Now;
+                db.Entry(sanPham).State = EntityState.Modified;
                 db.SaveChanges();
+                TempData["SuccessMessage"] = "Cập nhật sản phẩm thành công!";
                 return RedirectToAction("Index");
             }
-            ViewBag.MaLoai = new SelectList(db.LoaiSanPhams, "MaLoai", "TenLoai", sanPham.MaLoai);
-            ViewBag.MaNCC = new SelectList(db.NhaCungCaps, "MaNCC", "TenNCC", sanPham.MaNCC);
+
+            ViewBag.MaLoai = new SelectList(db.LoaiSanPham, "MaLoai", "TenLoai", sanPham.MaLoai);
+            ViewBag.MaNCC = new SelectList(db.NhaCungCap, "MaNCC", "TenNCC", sanPham.MaNCC);
             return View(sanPham);
         }
 
-        // GET: SanPhams/Delete/5
+        // GET: Xóa sản phẩm
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            SanPham sanPham = db.SanPhams.Find(id);
+
+            SanPham sanPham = db.SanPham
+                .Include(s => s.LoaiSanPham)
+                .Include(s => s.NhaCungCap)
+                .FirstOrDefault(s => s.MaSP == id);
+
             if (sanPham == null)
             {
                 return HttpNotFound();
             }
+
             return View(sanPham);
         }
 
-        // POST: SanPhams/Delete/5
+        // POST: Xóa sản phẩm
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult DeleteConfirmed(int id)
         {
-            SanPham sanPham = db.SanPhams.Find(id);
-            db.SanPhams.Remove(sanPham);
+            SanPham sanPham = db.SanPham.Find(id);
+
+            // Kiểm tra xem sản phẩm có trong đơn hàng nào không
+            var coTrongDonHang = db.ChiTietDonHang.Any(ct => ct.MaSP == id);
+            var coTrongGioHang = db.ChiTietGioHang.Any(ct => ct.MaSP == id);
+
+            if (coTrongDonHang || coTrongGioHang)
+            {
+                TempData["ErrorMessage"] = "Không thể xóa sản phẩm vì đã có trong đơn hàng hoặc giỏ hàng!";
+                return RedirectToAction("Delete", new { id = id });
+            }
+
+            db.SanPham.Remove(sanPham);
             db.SaveChanges();
+            TempData["SuccessMessage"] = "Xóa sản phẩm thành công!";
             return RedirectToAction("Index");
+        }
+
+        // Tìm kiếm sản phẩm (Ajax)
+        public ActionResult Search(string term)
+        {
+            if (string.IsNullOrEmpty(term))
+            {
+                return Json(new List<string>(), JsonRequestBehavior.AllowGet);
+            }
+
+            var results = db.SanPham
+                .Where(s => s.TenSP.Contains(term))
+                .Select(s => new {
+                    id = s.MaSP,
+                    text = s.TenSP,
+                    price = s.GiaBan,
+                    discount = s.GiamGia
+                })
+                .Take(10)
+                .ToList();
+
+            return Json(results, JsonRequestBehavior.AllowGet);
         }
 
         protected override void Dispose(bool disposing)

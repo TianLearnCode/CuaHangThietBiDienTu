@@ -4,40 +4,40 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="5494957245504eb3a0901c344ac58011" Name="Diagram1">
-        <EntityTypeShape EntityType="QL_WEB_THIETBIDIENTUModel.ChiTietDonHang" Width="1.5" PointX="8.25" PointY="5.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="QL_WEB_THIETBIDIENTUModel.ChiTietGioHang" Width="1.5" PointX="8.25" PointY="11.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="QL_WEB_THIETBIDIENTUModel.ChiTietNhapHang" Width="1.5" PointX="8.25" PointY="8.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="QL_WEB_THIETBIDIENTUModel.DanhGia" Width="1.5" PointX="11.25" PointY="8.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="QL_WEB_THIETBIDIENTUModel.DonHang" Width="1.5" PointX="6" PointY="3.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="QL_WEB_THIETBIDIENTUModel.GioHang" Width="1.5" PointX="6" PointY="12.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="QL_WEB_THIETBIDIENTUModel.HINHANH" Width="1.5" PointX="8.25" PointY="17.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="QL_WEB_THIETBIDIENTUModel.LoaiSanPham" Width="1.5" PointX="3.75" PointY="5.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="QL_WEB_THIETBIDIENTUModel.NguoiDung" Width="1.5" PointX="0.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="QL_WEB_THIETBIDIENTUModel.NhaCungCap" Width="1.5" PointX="0.75" PointY="8.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="QL_WEB_THIETBIDIENTUModel.NhapHang" Width="1.5" PointX="3" PointY="8.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="QL_WEB_THIETBIDIENTUModel.SanPham" Width="1.5" PointX="6" PointY="7.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="QL_WEB_THIETBIDIENTUModel.TaiKhoan" Width="1.5" PointX="3" PointY="12.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="QL_WEB_THIETBIDIENTUModel.ThongTinDatHang" Width="1.5" PointX="8.25" PointY="2.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="QL_WEB_THIETBIDIENTUModel.VaiTro" Width="1.5" PointX="1.5" PointY="0.75" IsExpanded="true" />
-        <AssociationConnector Association="QL_WEB_THIETBIDIENTUModel.FK__ChiTietDo__MaDon__5EBF139D" ManuallyRouted="false" />
-        <AssociationConnector Association="QL_WEB_THIETBIDIENTUModel.FK__ChiTietDon__MaSP__5FB337D6" ManuallyRouted="false" />
-        <AssociationConnector Association="QL_WEB_THIETBIDIENTUModel.FK__ChiTietGi__MaGio__693CA210" ManuallyRouted="false" />
-        <AssociationConnector Association="QL_WEB_THIETBIDIENTUModel.FK__ChiTietGio__MaSP__6A30C649" ManuallyRouted="false" />
-        <AssociationConnector Association="QL_WEB_THIETBIDIENTUModel.FK__ChiTietNh__MaNha__70DDC3D8" ManuallyRouted="false" />
-        <AssociationConnector Association="QL_WEB_THIETBIDIENTUModel.FK__ChiTietNha__MaSP__71D1E811" ManuallyRouted="false" />
-        <AssociationConnector Association="QL_WEB_THIETBIDIENTUModel.FK__DanhGia__MaKH__74AE54BC" ManuallyRouted="false" />
-        <AssociationConnector Association="QL_WEB_THIETBIDIENTUModel.FK__DanhGia__MaSP__75A278F5" ManuallyRouted="false" />
-        <AssociationConnector Association="QL_WEB_THIETBIDIENTUModel.FK__DonHang__MaKH__5BE2A6F2" ManuallyRouted="false" />
-        <AssociationConnector Association="QL_WEB_THIETBIDIENTUModel.FK__ThongTinD__MaDon__628FA481" ManuallyRouted="false" />
-        <AssociationConnector Association="QL_WEB_THIETBIDIENTUModel.FK__GioHang__MaKH__66603565" ManuallyRouted="false" />
-        <AssociationConnector Association="QL_WEB_THIETBIDIENTUModel.FK__HINHANH__MaSP__787EE5A0" ManuallyRouted="false" />
-        <AssociationConnector Association="QL_WEB_THIETBIDIENTUModel.FK__SanPham__MaLoai__5629CD9C" ManuallyRouted="false" />
-        <AssociationConnector Association="QL_WEB_THIETBIDIENTUModel.FK__NguoiDung__MaVai__4BAC3F29" ManuallyRouted="false" />
-        <AssociationConnector Association="QL_WEB_THIETBIDIENTUModel.FK__NhapHang__MaNV__6E01572D" ManuallyRouted="false" />
-        <AssociationConnector Association="QL_WEB_THIETBIDIENTUModel.FK__TaiKhoan__MaNguo__4F7CD00D" ManuallyRouted="false" />
-        <AssociationConnector Association="QL_WEB_THIETBIDIENTUModel.FK__NhapHang__MaNCC__6D0D32F4" ManuallyRouted="false" />
-        <AssociationConnector Association="QL_WEB_THIETBIDIENTUModel.FK__SanPham__MaNCC__571DF1D5" ManuallyRouted="false" />
+      <Diagram DiagramId="d51a7266144f4a25892d5e747f76baf0" Name="Diagram1">
+        <EntityTypeShape EntityType="QL_THIETBIDIENTUModel.ChiTietDonHang" Width="1.5" PointX="8.25" PointY="5.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="QL_THIETBIDIENTUModel.ChiTietGioHang" Width="1.5" PointX="8.25" PointY="11.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="QL_THIETBIDIENTUModel.ChiTietNhapHang" Width="1.5" PointX="8.25" PointY="8.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="QL_THIETBIDIENTUModel.DanhGia" Width="1.5" PointX="11.25" PointY="8.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="QL_THIETBIDIENTUModel.DonHang" Width="1.5" PointX="6" PointY="3.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="QL_THIETBIDIENTUModel.GioHang" Width="1.5" PointX="6" PointY="12.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="QL_THIETBIDIENTUModel.HINHANH" Width="1.5" PointX="8.25" PointY="17.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="QL_THIETBIDIENTUModel.LoaiSanPham" Width="1.5" PointX="3.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="QL_THIETBIDIENTUModel.NguoiDung" Width="1.5" PointX="0.75" PointY="3.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="QL_THIETBIDIENTUModel.NhaCungCap" Width="1.5" PointX="0.75" PointY="8.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="QL_THIETBIDIENTUModel.NhapHang" Width="1.5" PointX="3" PointY="8.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="QL_THIETBIDIENTUModel.SanPham" Width="1.5" PointX="6" PointY="7.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="QL_THIETBIDIENTUModel.TaiKhoan" Width="1.5" PointX="3" PointY="12" IsExpanded="true" />
+        <EntityTypeShape EntityType="QL_THIETBIDIENTUModel.ThongTinDatHang" Width="1.5" PointX="8.25" PointY="2.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="QL_THIETBIDIENTUModel.VaiTro" Width="1.5" PointX="1.5" PointY="0.75" IsExpanded="true" />
+        <AssociationConnector Association="QL_THIETBIDIENTUModel.FK__ChiTietDo__MaDon__628FA481" ManuallyRouted="false" />
+        <AssociationConnector Association="QL_THIETBIDIENTUModel.FK__ChiTietDon__MaSP__6383C8BA" ManuallyRouted="false" />
+        <AssociationConnector Association="QL_THIETBIDIENTUModel.FK__ChiTietGi__MaGio__6D0D32F4" ManuallyRouted="false" />
+        <AssociationConnector Association="QL_THIETBIDIENTUModel.FK__ChiTietGio__MaSP__6E01572D" ManuallyRouted="false" />
+        <AssociationConnector Association="QL_THIETBIDIENTUModel.FK__ChiTietNh__MaNha__74AE54BC" ManuallyRouted="false" />
+        <AssociationConnector Association="QL_THIETBIDIENTUModel.FK__ChiTietNha__MaSP__75A278F5" ManuallyRouted="false" />
+        <AssociationConnector Association="QL_THIETBIDIENTUModel.FK__DanhGia__MaKH__797309D9" ManuallyRouted="false" />
+        <AssociationConnector Association="QL_THIETBIDIENTUModel.FK__DanhGia__MaSP__7A672E12" ManuallyRouted="false" />
+        <AssociationConnector Association="QL_THIETBIDIENTUModel.FK__DonHang__MaKH__5FB337D6" ManuallyRouted="false" />
+        <AssociationConnector Association="QL_THIETBIDIENTUModel.FK__ThongTinD__MaDon__66603565" ManuallyRouted="false" />
+        <AssociationConnector Association="QL_THIETBIDIENTUModel.FK__GioHang__MaKH__6A30C649" ManuallyRouted="false" />
+        <AssociationConnector Association="QL_THIETBIDIENTUModel.FK__HINHANH__MaSP__7D439ABD" ManuallyRouted="false" />
+        <AssociationConnector Association="QL_THIETBIDIENTUModel.FK__SanPham__MaLoai__59FA5E80" ManuallyRouted="false" />
+        <AssociationConnector Association="QL_THIETBIDIENTUModel.FK__NguoiDung__MaVai__4CA06362" ManuallyRouted="false" />
+        <AssociationConnector Association="QL_THIETBIDIENTUModel.FK__NhapHang__MaNV__71D1E811" ManuallyRouted="false" />
+        <AssociationConnector Association="QL_THIETBIDIENTUModel.FK__TaiKhoan__MaNguo__5165187F" ManuallyRouted="false" />
+        <AssociationConnector Association="QL_THIETBIDIENTUModel.FK__NhapHang__MaNCC__70DDC3D8" ManuallyRouted="false" />
+        <AssociationConnector Association="QL_THIETBIDIENTUModel.FK__SanPham__MaNCC__5AEE82B9" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

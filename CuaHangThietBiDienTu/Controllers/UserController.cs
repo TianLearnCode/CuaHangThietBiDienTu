@@ -13,15 +13,15 @@ namespace CuaHangThietBiDienTu.Controllers
 {
     public class UserController : Controller
     {
-        private QL_WEB_THIETBIDIENTUEntities db = new QL_WEB_THIETBIDIENTUEntities();
+        private QL_THIETBIDIENTUEntities db = new QL_THIETBIDIENTUEntities();
 
         // GET: User
 
 
         public ActionResult DSKhachHang()
         {
-            var nguoiDungs = (from nd in db.NguoiDungs
-                              join tk in db.TaiKhoans on nd.MaNguoiDung equals tk.MaNguoiDung
+            var nguoiDungs = (from nd in db.NguoiDung
+                              join tk in db.TaiKhoan on nd.MaNguoiDung equals tk.MaNguoiDung
                               where nd.MaVaiTro == 3
                               select new User
                               {
@@ -43,8 +43,8 @@ namespace CuaHangThietBiDienTu.Controllers
         }
         public ActionResult DSNhanVien()
         {
-            var nguoiDungs = (from nd in db.NguoiDungs
-                              join tk in db.TaiKhoans on nd.MaNguoiDung equals tk.MaNguoiDung
+            var nguoiDungs = (from nd in db.NguoiDung
+                              join tk in db.TaiKhoan on nd.MaNguoiDung equals tk.MaNguoiDung
                               where nd.MaVaiTro == 2
                               select new User
                               {
@@ -64,7 +64,7 @@ namespace CuaHangThietBiDienTu.Controllers
         }
         public ActionResult Index()
         {
-            var nguoiDungs = db.NguoiDungs.Include(n => n.VaiTro);
+            var nguoiDungs = db.NguoiDung.Include(n => n.VaiTro);
             return View(nguoiDungs.ToList());
         }
 
@@ -75,7 +75,7 @@ namespace CuaHangThietBiDienTu.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            NguoiDung nguoiDung = db.NguoiDungs.Find(id);
+            NguoiDung nguoiDung = db.NguoiDung.Find(id);
             if (nguoiDung == null)
             {
                 return HttpNotFound();
@@ -86,7 +86,7 @@ namespace CuaHangThietBiDienTu.Controllers
         // GET: User/Create
         public ActionResult Create()
         {
-            ViewBag.MaVaiTro = new SelectList(db.VaiTroes, "MaVaiTro", "TenVaiTro");
+            ViewBag.MaVaiTro = new SelectList(db.VaiTro, "MaVaiTro", "TenVaiTro");
             return View();
         }
 
@@ -162,7 +162,7 @@ namespace CuaHangThietBiDienTu.Controllers
                     nguoiDung.AVT = "defaultAVT.jpg";
                 }
 
-                db.NguoiDungs.Add(nguoiDung);
+                db.NguoiDung.Add(nguoiDung);
                 db.SaveChanges();   
 
                 var taiKhoan = new TaiKhoan
@@ -172,7 +172,7 @@ namespace CuaHangThietBiDienTu.Controllers
                     MaNguoiDung = nguoiDung.MaNguoiDung
                 };
 
-                db.TaiKhoans.Add(taiKhoan);
+                db.TaiKhoan.Add(taiKhoan);
                 db.SaveChanges();
 
                 // 3. Điều hướng theo vai trò
@@ -190,7 +190,7 @@ namespace CuaHangThietBiDienTu.Controllers
                 }
             }
 
-            ViewBag.MaVaiTro = new SelectList(db.VaiTroes, "MaVaiTro", "TenVaiTro", model.MaVaiTro);
+            ViewBag.MaVaiTro = new SelectList(db.VaiTro, "MaVaiTro", "TenVaiTro", model.MaVaiTro);
             return View(model);
         }
 
@@ -202,12 +202,12 @@ namespace CuaHangThietBiDienTu.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            NguoiDung nguoiDung = db.NguoiDungs.Find(id);
+            NguoiDung nguoiDung = db.NguoiDung.Find(id);
             if (nguoiDung == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.MaVaiTro = new SelectList(db.VaiTroes, "MaVaiTro", "TenVaiTro", nguoiDung.MaVaiTro);
+            ViewBag.MaVaiTro = new SelectList(db.VaiTro, "MaVaiTro", "TenVaiTro", nguoiDung.MaVaiTro);
             return View(nguoiDung);
         }
 
@@ -231,7 +231,7 @@ namespace CuaHangThietBiDienTu.Controllers
                     return RedirectToAction("DSKhachHang");
                 }
             }
-            ViewBag.MaVaiTro = new SelectList(db.VaiTroes, "MaVaiTro", "TenVaiTro", nguoiDung.MaVaiTro);
+            ViewBag.MaVaiTro = new SelectList(db.VaiTro, "MaVaiTro", "TenVaiTro", nguoiDung.MaVaiTro);
             return View(nguoiDung);
         }
 
@@ -242,7 +242,7 @@ namespace CuaHangThietBiDienTu.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            NguoiDung nguoiDung = db.NguoiDungs.Find(id);
+            NguoiDung nguoiDung = db.NguoiDung.Find(id);
             if (nguoiDung == null)
             {
                 return HttpNotFound();
@@ -255,8 +255,8 @@ namespace CuaHangThietBiDienTu.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            NguoiDung nguoiDung = db.NguoiDungs.Find(id);
-            db.NguoiDungs.Remove(nguoiDung);
+            NguoiDung nguoiDung = db.NguoiDung.Find(id);
+            db.NguoiDung.Remove(nguoiDung);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
