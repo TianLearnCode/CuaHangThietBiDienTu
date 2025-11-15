@@ -10,7 +10,7 @@
     @Scripts.Render("~/bundles/modernizr")
 
     <style>
-        /* Giữ nguyên các style cũ */
+
         .sidebar {
             padding: 10px;
             border: solid 1px #b9b9b9;
@@ -120,18 +120,18 @@
                 color: #0dcaf0 !important;
             }
 
-        /* Ẩn sidebar trên trang giỏ hàng */
+
         .sidebar-container {
             display: none;
         }
 
-        /* Mở rộng nội dung chính */
+
         .main-content {
             width: 100%;
             max-width: 100%;
         }
 
-        /* Responsive */
+
         @@media (max-width: 768px) {
             .side-bar {
                 min-height: auto !important;
@@ -139,7 +139,7 @@
             }
         }
 
-        /* Custom styles for cart page */
+
         .quantity-controls .form-control {
             text-align: center;
         }
@@ -333,7 +333,7 @@
         });
     </script>
 
-    <!-- QUAN TRỌNG: Render section scripts -->
+
     @RenderSection("scripts", required: false)
 </body>
 </html>

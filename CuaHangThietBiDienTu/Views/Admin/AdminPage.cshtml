@@ -1,61 +1,171 @@
-﻿@{
+﻿@model CuaHangThietBiDienTu.Models.AdminDashboardViewModel
+@using System.Globalization
+
+@{
+    ViewBag.Title = "Admin Dashboard";
     Layout = "~/Views/Shared/AdminLayout.cshtml";
 }
-@{
-    ViewBag.Title = "AdminPage";
-}
 
-
-@{
-    ViewBag.Title = "Trang Quản Trị";
-}
-<style>
-    .icon-bg {
-        background-color: #e0e0e0;
-    }
-</style>
-<div class="container mt-4">
-    <h2 class="mb-4 text-center">Thống kê tổng quan</h2>
-
-    <div class="row g-4">
-
-
-        <div class="col-md-6">
-
-            <div class="rounded-5 border border-gray-200 bg-white p-4">
-                <div class="d-flex align-items-center justify-content-center rounded-4 icon-bg" style="width: 48px; height: 48px;">
-                    <i class="fa-regular fa-user"></i>
-                </div>
-
-                <div class="flex items-end justify-between mt-5">
-                    <div>
-                        <span class="text-sm text-gray-500 dark:text-gray-400">Khách hàng</span>
-                        <h4 class="mt-2 fw-bold text-primary">@ViewBag.TongKhachHang</h4>
-                    </div>
-                </div>
-            </div>
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-gray-800">
+            <i class="fas fa-tachometer-alt me-2"></i>TỔNG QUAN
+        </h1>
+        <div class="text-muted">
+            <i class="fas fa-calendar me-1"></i> @DateTime.Now.ToString("dd/MM/yyyy")
         </div>
-
-
-        <div class="col-md-6">
-
-
-            <div class="rounded-5 border border-gray-200 bg-white p-4">
-                <div class="d-flex align-items-center justify-content-center rounded-4 icon-bg" style="width: 48px; height: 48px;">
-                    <i class="fa-solid fa-coins"></i>
-                </div>
-
-                <div class="flex items-end justify-between mt-5">
-                    <div>
-                        <span class="text-sm text-gray-500 dark:text-gray-400">Doanh thu</span>
-                        <h4 class="mt-2 fw-bold text-success">
-                            @String.Format("{0:N0} VNĐ", ViewBag.TongDoanhThu)
-
-                        </h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
+
+    <!-- Thống kê nhanh hôm nay -->
+    <div class="row mb-4" id="quickStats">
+        <div class="col-md-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Doanh Thu Hôm Nay
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="todayRevenue">
+                                <i class="fas fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-money-bill-wave fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Đơn Hàng Hôm Nay
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="todayOrders">
+                                <i class="fas fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-shopping-cart fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Khách Hàng Mới
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="newCustomers">
+                                <i class="fas fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-user-plus fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Thống kê tổng quan -->
+    <div class="row">
+        <!-- Tổng doanh thu -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Tổng Doanh Thu
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                @Model.TongDoanhThu.ToString("N0") ₫
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Doanh thu tháng -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Doanh Thu Tháng @Model.CurrentMonth
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                @Model.DoanhThuThang.ToString("N0") ₫
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-chart-line fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tổng khách hàng -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Tổng Khách Hàng
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                @Model.TongKhachHang
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tổng sản phẩm -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Tổng Sản Phẩm
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                @Model.TongSanPham
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-boxes fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Phần còn lại của view giữ nguyên... -->
 </div>
