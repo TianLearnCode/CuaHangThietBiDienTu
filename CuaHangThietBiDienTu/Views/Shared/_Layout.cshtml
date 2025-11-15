@@ -78,7 +78,7 @@
         .side-bar {
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             border-radius: 10px;
-            margin: 10px;
+            margin: 10px 0;
         }
 
         .sidebar-title {
@@ -139,6 +139,22 @@
             .col-lg-3 {
                 margin-bottom: 20px;
             }
+        }
+
+        /* Bố cục chính */
+        .main-container {
+            display: flex;
+            min-height: calc(100vh - 200px);
+        }
+
+        .sidebar-column {
+            width: 280px;
+            flex-shrink: 0;
+        }
+
+        .content-column {
+            flex: 1;
+            padding: 0 15px;
         }
     </style>
 </head>
@@ -233,84 +249,10 @@
 
     <div class="container-fluid body-content">
         <div class="row">
-            <!-- Sidebar với bộ lọc -->
-            <div class="col-lg-3 col-md-4 mb-4">
-                <!-- Bộ lọc sản phẩm - Chỉ hiển thị trên trang sản phẩm -->
-                <div class="product-filter">
-                    <div class="card shadow-sm mb-4">
-                        <div class="card-header bg-primary text-white">
-                            <h5 class="mb-0"><i class="fas fa-filter me-2"></i>BỘ LỌC SẢN PHẨM</h5>
-                        </div>
-                        <div class="card-body">
-                            <!-- Search -->
-                            <div class="mb-4">
-                                <label class="form-label fw-bold">Tìm kiếm</label>
-                                @using (Html.BeginForm("SanPham", "SanPhams", FormMethod.Get))
-                                {
-                                    <div class="input-group">
-                                        <input type="text" name="searchString" class="form-control"
-                                               placeholder="Tên sản phẩm..." value="@ViewBag.SearchString">
-                                        <button class="btn btn-primary" type="submit">
-                                            <i class="fas fa-search"></i>
-                                        </button>
-                                    </div>
-                                }
-                            </div>
-
-                            <!-- Loại sản phẩm -->
-                            <div class="mb-4">
-                                <label class="form-label fw-bold">Loại sản phẩm</label>
-                                @{
-                                    var maLoaiList = ViewBag.MaLoai as System.Web.Mvc.SelectList;
-                                }
-                                @if (maLoaiList != null)
-                                {
-                                    using (Html.BeginForm("SanPham", "SanPhams", FormMethod.Get))
-                                    {
-                                        @Html.DropDownList("maLoai", maLoaiList,
-                                            "Tất cả loại", new { @class = "form-select", onchange = "this.form.submit()" })
-                                    }
-                                }
-                                else
-                                {
-                                    <select class="form-select" disabled>
-                                        <option>Không có dữ liệu</option>
-                                    </select>
-                                }
-                            </div>
-
-                            <!-- Nhà cung cấp -->
-                            <div class="mb-4">
-                                <label class="form-label fw-bold">Nhà cung cấp</label>
-                                @{
-                                    var maNCCList = ViewBag.MaNCC as System.Web.Mvc.SelectList;
-                                }
-                                @if (maNCCList != null)
-                                {
-                                    using (Html.BeginForm("SanPham", "SanPhams", FormMethod.Get))
-                                    {
-                                        @Html.DropDownList("maNCC", maNCCList,
-                                            "Tất cả NCC", new { @class = "form-select", onchange = "this.form.submit()" })
-                                    }
-                                }
-                                else
-                                {
-                                    <select class="form-select" disabled>
-                                        <option>Không có dữ liệu</option>
-                                    </select>
-                                }
-                            </div>
-
-                            <!-- Reset -->
-                            <a href="@Url.Action("SanPham")" class="btn btn-outline-secondary w-100">
-                                <i class="fas fa-refresh me-1"></i> Xóa bộ lọc
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
+            <!-- Cột bên trái - Menu và Bộ lọc -->
+            <div class="col-lg-3 col-md-4 sidebar-column">
                 <!-- Menu Categories -->
-                <div class="side-bar bg-white p-3">
+                <div class="side-bar bg-white p-3 mb-4">
                     <h3 class="sidebar-title text-primary border-bottom pb-2 mb-3">
                         <i class="fas fa-bars me-2"></i> Danh mục
                     </h3>
@@ -355,10 +297,89 @@
                         </a>
                     </div>
                 </div>
+
+                <!-- Bộ lọc sản phẩm - Chỉ hiển thị trên trang sản phẩm -->
+                <div class="product-filter">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="fas fa-filter me-2"></i>BỘ LỌC SẢN PHẨM</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Form chính cho tất cả bộ lọc -->
+                            @using (Html.BeginForm("SanPham", "SanPhams", FormMethod.Get, new { id = "filterForm" }))
+                            {
+                                <!-- Search -->
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold">Tìm kiếm</label>
+                                    <div class="input-group">
+                                        <input type="text" name="searchString" class="form-control"
+                                               placeholder="Tên sản phẩm..." value="@ViewBag.SearchString">
+                                        <button class="btn btn-primary" type="submit">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Loại sản phẩm -->
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold">Loại sản phẩm</label>
+                                    @{
+                                        var maLoaiList = ViewBag.MaLoai as System.Web.Mvc.SelectList;
+                                    }
+                                    @if (maLoaiList != null)
+                                    {
+                                        @Html.DropDownList("maLoai", maLoaiList,
+                                            "Tất cả loại", new { @class = "form-select", onchange = "submitForm()" })
+                                    }
+                                    else
+                                    {
+                                        <select class="form-select" disabled>
+                                            <option>Không có dữ liệu</option>
+                                        </select>
+                                    }
+                                </div>
+
+                                <!-- Nhà cung cấp -->
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold">Nhà cung cấp</label>
+                                    @{
+                                        var maNCCList = ViewBag.MaNCC as System.Web.Mvc.SelectList;
+                                    }
+                                    @if (maNCCList != null)
+                                    {
+                                        @Html.DropDownList("maNCC", maNCCList,
+                                            "Tất cả NCC", new { @class = "form-select", onchange = "submitForm()" })
+                                    }
+                                    else
+                                    {
+                                        <select class="form-select" disabled>
+                                            <option>Không có dữ liệu</option>
+                                        </select>
+                                    }
+                                </div>
+
+                                <!-- Sắp xếp theo giá -->
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold">Sắp xếp theo giá</label>
+                                    <select name="sortPrice" class="form-select" onchange="submitForm()">
+                                        <option value="">Mặc định</option>
+                                        <option value="asc" @(ViewBag.SortPrice == "asc" ? "selected" : "")>Giá tăng dần</option>
+                                        <option value="desc" @(ViewBag.SortPrice == "desc" ? "selected" : "")>Giá giảm dần</option>
+                                    </select>
+                                </div>
+
+                                <!-- Reset -->
+                                <a href="@Url.Action("SanPham")" class="btn btn-outline-secondary w-100">
+                                    <i class="fas fa-refresh me-1"></i> Xóa bộ lọc
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Main Content -->
-            <div class="col-lg-9 col-md-8">
+            <!-- Cột bên phải - Nội dung chính -->
+            <div class="col-lg-9 col-md-8 content-column">
                 @RenderBody()
             </div>
         </div>
@@ -438,6 +459,11 @@
                 }
             });
         });
+
+        // Hàm submit form lọc
+        function submitForm() {
+            document.getElementById('filterForm').submit();
+        }
     </script>
 
     @RenderSection("scripts", required: false)

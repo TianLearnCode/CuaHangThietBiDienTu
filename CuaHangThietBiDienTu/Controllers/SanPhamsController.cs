@@ -94,15 +94,13 @@ namespace CuaHangThietBiDienTu.Controllers
         }
 
         // GET: Trang danh sách sản phẩm
-        public ActionResult SanPham(string searchString, int? maLoai, int? maNCC, decimal? minPrice, decimal? maxPrice)
+        public ActionResult SanPham(string searchString, int? maLoai, int? maNCC, string sortPrice)
         {
-            var sanPhams = db.SanPham
-                .Include(s => s.LoaiSanPham)
-                .Include(s => s.NhaCungCap)
-                .AsQueryable();
+            // Lấy danh sách sản phẩm theo điều kiện lọc
+            var sanPhams = db.SanPham.AsQueryable();
 
-            // Tìm kiếm theo tên sản phẩm
-            if (!string.IsNullOrEmpty(searchString))
+            // Lọc theo tìm kiếm
+            if (!String.IsNullOrEmpty(searchString))
             {
                 sanPhams = sanPhams.Where(s => s.TenSP.Contains(searchString));
             }
@@ -110,32 +108,38 @@ namespace CuaHangThietBiDienTu.Controllers
             // Lọc theo loại sản phẩm
             if (maLoai.HasValue)
             {
-                sanPhams = sanPhams.Where(s => s.MaLoai == maLoai);
+                sanPhams = sanPhams.Where(s => s.MaLoai == maLoai.Value);
             }
 
             // Lọc theo nhà cung cấp
             if (maNCC.HasValue)
             {
-                sanPhams = sanPhams.Where(s => s.MaNCC == maNCC);
+                sanPhams = sanPhams.Where(s => s.MaNCC == maNCC.Value);
             }
 
-            // Lọc theo khoảng giá
-            if (minPrice.HasValue)
+            // Sắp xếp theo giá
+            if (!String.IsNullOrEmpty(sortPrice))
             {
-                sanPhams = sanPhams.Where(s => s.GiaBan >= minPrice);
+                if (sortPrice == "asc")
+                {
+                    sanPhams = sanPhams.OrderBy(s => s.GiaBan);
+                }
+                else if (sortPrice == "desc")
+                {
+                    sanPhams = sanPhams.OrderByDescending(s => s.GiaBan);
+                }
             }
 
-            if (maxPrice.HasValue)
-            {
-                sanPhams = sanPhams.Where(s => s.GiaBan <= maxPrice);
-            }
+            // Giữ lại các giá trị lọc hiện tại để hiển thị trong ViewBag
+            ViewBag.CurrentMaLoai = maLoai;
+            ViewBag.CurrentMaNCC = maNCC;
+            ViewBag.CurrentSortPrice = sortPrice;
 
-            // Sắp xếp
-            sanPhams = sanPhams.OrderByDescending(s => s.NgayCapNhat);
-
-            ViewBag.SearchString = searchString;
+            // Các ViewBag khác
             ViewBag.MaLoai = new SelectList(db.LoaiSanPham, "MaLoai", "TenLoai", maLoai);
             ViewBag.MaNCC = new SelectList(db.NhaCungCap, "MaNCC", "TenNCC", maNCC);
+            ViewBag.SearchString = searchString;
+            ViewBag.SortPrice = sortPrice;
 
             return View(sanPhams.ToList());
         }

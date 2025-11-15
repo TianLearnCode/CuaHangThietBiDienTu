@@ -310,7 +310,7 @@
     <Content Include="Views\SanPhams\_MenuLoaiSanPham.cshtml" />
     <Content Include="Views\SanPhams\_MenuNhaCungCap.cshtml" />
     <Content Include="Views\Cart\Index.cshtml" />
-    <Content Include="Views\Shared\_LayoutGioHang.cshtml" />
+    <Content Include="Views\Shared\_Layout2.cshtml" />
     <Content Include="Views\Account\OrderDetails.cshtml" />
     <Content Include="Views\Account\OrderHistory.cshtml" />
     <Content Include="Views\Cart\Checkout.cshtml" />
